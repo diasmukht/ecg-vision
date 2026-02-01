@@ -1,0 +1,54 @@
+.heartbeat-container {
+    width: 100%;
+    max-width: 600px;
+    background: transparent;
+    overflow: hidden;
+}
+
+.heartbeat-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* Добавляем мягкое свечение самой линии */
+    filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.8));
+}
+
+.heartbeat-line {
+    fill: none;
+    stroke: #FF3B5C;
+    /* Ярко-красный */
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    /* Длина линии и ее смещение для анимации рисования */
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+
+    /* Анимация: 2 секунды на проход, без пауз, бесконечно */
+    animation: drawLine 2s linear infinite;
+}
+
+@keyframes drawLine {
+    0% {
+        stroke-dashoffset: 1000;
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+        /* Линия появляется сразу в начале движения */
+    }
+
+    90% {
+        stroke-dashoffset: 0;
+        opacity: 1;
+    }
+
+    100% {
+        stroke-dashoffset: -100;
+        /* Небольшой уход в минус для плавности */
+        opacity: 0;
+        /* Исчезновение перед новым циклом */
+    }
+}

@@ -1,0 +1,52 @@
+from django import forms
+from .models import Doctor
+
+class UserRegistrationForm(forms.ModelForm):
+    # Добавляем кастомное поле для ФИО
+    full_name = forms.CharField(
+        label="ФИО", 
+        widget=forms.TextInput(attrs={'placeholder': 'Иванов Иван Иванович'}),
+        error_messages={'required': 'Пожалуйста, введите ФИО'}
+    )
+    password = forms.CharField(widget=forms.PasswordInput)
+    password_confirm = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = Doctor
+        # Убираем first_name, оставляем только email и пароль
+        fields = ['email', 'password']
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if Doctor.objects.filter(email=email).exists():
+            raise forms.ValidationError("Этот Email уже зарегистрирован.")
+        return email
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        password_confirm = cleaned_data.get("password_confirm")
+
+        if password != password_confirm:
+            raise forms.ValidationError("Пароли не совпадают")
+        return cleaned_data
+
+    # Переопределяем сохранение, чтобы разбить ФИО
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        
+        # Берем строку "Иванов Иван Иванович"
+        full_name = self.cleaned_data.get('full_name', '').strip()
+        parts = full_name.split()
+        
+        # Логика разбиения (стандарт ФИО: Фамилия Имя Отчество)
+        if len(parts) > 0:
+            user.last_name = parts[0]        # 1-е слово -> Фамилия
+        if len(parts) > 1:
+            user.first_name = parts[1]       # 2-е слово -> Имя
+        if len(parts) > 2:
+            user.middle_name = ' '.join(parts[2:]) # Остальное -> Отчество
+            
+        if commit:
+            user.save()
+        return user

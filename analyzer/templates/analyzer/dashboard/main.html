@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{% extends 'analyzer/dashboard/base_dash.html' %}
+
+{% block page_name %}Главная{% endblock %}
+
+{% block content %}
+<div class="dashboard-welcome">
+    <h1 style="font-size: 28px; margin-bottom: 20px;">Добро пожаловать, Доктор!</h1>
+    
+    <div style="background: #1a1a1a; padding: 40px; border-radius: 20px; text-align: center;">
+        <h2 style="margin-bottom: 15px;">Загрузка ЭКГ</h2>
+        <p style="color: #999; margin-bottom: 30px;">Загрузите файл CSV для анализа</p>
+        
+        <button style="background: #0067FF; color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 16px; cursor: pointer;">
+            Выбрать файл
+        </button>
+    </div>
+</div>
+{% endblock %}

@@ -1,12 +1,85 @@
-<!DOCTYPE html>
+<!Doctype html>
 {% extends 'analyzer/dashboard/base_dash.html' %}
-
-{% block title %}Настройки{% endblock %}
-{% block page_name %}Настройки профиля{% endblock %}
+{% load static %}
 
 {% block content %}
-<div style="background: #1a1a1a; padding: 40px; border-radius: 20px;">
-    <h2>Это страница Настроек</h2>
-    <p style="color: #888;">Здесь можно сменить пароль и данные врача.</p>
+
+
+<div class="settings-container">
+    
+    <div class="profile-card">
+        <div class="avatar-wrapper">
+            {% if user.avatar %}
+                <img src="{{ user.avatar.url }}" alt="Avatar">
+            {% else %}
+                <div class="avatar-placeholder">
+                    {{ user.first_name|first|upper }}
+                </div>
+            {% endif %}
+        </div>
+        <h2 class="profile-name">{{ user.last_name }} {{ user.first_name }}</h2>
+        <div class="profile-role">{{ user.specialization }}</div>
+        
+        <p style="color: #888; font-size: 0.9rem; margin-top: 20px;">
+            Врач-диагност<br>
+            ECG Vision System
+        </p>
+    </div>
+
+    <div class="settings-form-card">
+        <h1 class="section-title">Настройки профиля</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label class="form-label">ФИО (Полное имя)</label>
+                    {{ form.full_name.errors }}
+                    <input type="text" name="full_name" class="form-control" value="{{ form.full_name.value|default:'' }}" placeholder="Иванов Иван Иванович">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email (Логин)</label>
+                    <input type="email" name="email" class="form-control" value="{{ user.email }}" readonly style="background-color: #e9ecef; cursor: not-allowed;">
+                    <small style="color: #999;">Email изменить нельзя</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Телефон</label>
+                    <input type="text" name="phone" class="form-control" value="{{ form.phone.value|default:'' }}" placeholder="+7 777 000 00 00">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Специализация</label>
+                    <input type="text" name="specialization" class="form-control" value="{{ form.specialization.value|default:'Кардиолог' }}">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Фото профиля</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" name="avatar" class="form-control" style="padding-top: 10px;">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-save">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                Сохранить изменения
+            </button>
+        </form>
+    </div>
 </div>
 {% endblock %}

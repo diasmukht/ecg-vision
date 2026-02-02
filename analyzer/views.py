@@ -2,28 +2,28 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, DoctorProfileForm
 from django.contrib.auth.forms import AuthenticationForm
 
-# === LANDING ===
+# Landing
 def landing(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
     return render(request, 'analyzer/landing.html')
 
-# === AUTHENTICATION ===
+# Auth 
 
 def user_login(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
 
     if request.method == 'POST':
-        # Стандартная форма Django для входа
+    
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            # Пытаемся найти пользователя
+          
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
@@ -42,19 +42,19 @@ def user_register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            # Создаем объект, но пока не сохраняем в БД
+            
             user = form.save(commit=False)
-            # Устанавливаем username равным email (лайфхак для Django Auth)
+           
             user.username = form.cleaned_data['email'] 
-            # Хешируем пароль (обязательно!)
+           
             user.set_password(form.cleaned_data['password'])
             user.save()
             
-            # Сразу логиним пользователя после регистрации
+           
             login(request, user)
             return redirect('dashboard')
         else:
-            # Выводим ошибки (например, пароли не совпали)
+           
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{error}")
@@ -65,7 +65,7 @@ def user_logout(request):
     logout(request)
     return redirect('landing')
 
-# === DASHBOARD (Защищенные страницы) ===
+# Dashboard
 
 @login_required(login_url='login')
 def dashboard_main(request):
@@ -86,3 +86,21 @@ def dashboard_patients(request):
 @login_required(login_url='login')
 def dashboard_settings(request):
     return render(request, 'analyzer/dashboard/settings.html')
+
+@login_required(login_url='login')
+def dashboard_settings(request):
+    user = request.user
+    
+    if request.method == 'POST':
+        
+        form = DoctorProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Профиль успешно обновлен!")
+            return redirect('settings')
+        else:
+            messages.error(request, "Ошибка при обновлении. Проверьте данные.")
+    else:
+        form = DoctorProfileForm(instance=user)
+
+    return render(request, 'analyzer/dashboard/settings.html', {'form': form})

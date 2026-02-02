@@ -12,5 +12,5 @@ urlpatterns = [
     path('dashboard/archive/', views.dashboard_archive, name='archive'),       
     path('dashboard/check-ecg/', views.dashboard_check_ecg, name='check_ecg'), 
     path('dashboard/patients/', views.dashboard_patients, name='patients'),    
-    path('dashboard/settings/', views.dashboard_settings, name='settings'),   
+    path('dashboard/settings/', views.dashboard_settings, name='settings'),
 ]

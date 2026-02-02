@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ECG Vision - {% block title %}Dashboard{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/settings.css' %}">
 </head>
 
 <body>
@@ -36,7 +37,8 @@
                     <span>Dashboard</span>
                 </a>
 
-                <a href="{% url 'archive' %}" class="nav-item {% if request.resolver_match.url_name == 'archive' %}active{% endif %}">
+                <a href="{% url 'archive' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'archive' %}active{% endif %}">
                     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill="currentColor"
                             d="M18.5837 12.0837H10.9163C10.364 12.0837 9.9163 11.636 9.9163 11.0837V3.4163C9.9163 3.18638 9.72992 3 9.5 3C4.25329 3 0 7.25329 0 12.5C0 17.7467 4.25329 22 9.5 22C14.7467 22 19 17.7467 19 12.5C19 12.2701 18.8136 12.0837 18.5837 12.0837Z" />
@@ -46,7 +48,8 @@
                     <span>Архив анализов</span>
                 </a>
 
-                <a href="{% url 'check_ecg' %}" class="nav-item {% if request.resolver_match.url_name == 'check_ecg' %}active{% endif %}">
+                <a href="{% url 'check_ecg' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'check_ecg' %}active{% endif %}">
                     <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill="currentColor"
                             d="M10.5114 19.0447C10.6407 19.1767 10.8167 19.25 11.0009 19.25C11.1852 19.25 11.3612 19.1767 11.4904 19.0447L20.2849 10.1338C23.9525 6.4185 21.3464 0 16.1306 0C12.9983 0 11.561 2.30175 11.0009 2.73167C10.4381 2.29992 9.00993 0 5.87126 0C0.671929 0 -1.96624 6.402 1.71785 10.1338L10.5114 19.0447Z" />
@@ -54,7 +57,8 @@
                     <span>Проверка ЭКГ</span>
                 </a>
 
-                <a href="{% url 'patients' %}" class="nav-item {% if request.resolver_match.url_name == 'patients' %}active{% endif %}">
+                <a href="{% url 'patients' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'patients' %}active{% endif %}">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"
                             d="M8 2C8.26522 2 8.51957 2.10536 8.70711 2.29289C8.89464 2.48043 9 2.73478 9 3V4H15V3C15 2.73478 15.1054 2.48043 15.2929 2.29289C15.4804 2.10536 15.7348 2 16 2C16.2652 2 16.5196 2.10536 16.7071 2.29289C16.8946 2.48043 17 2.73478 17 3V4H18C18.7956 4 19.5587 4.31607 20.1213 4.87868C20.6839 5.44129 21 6.20435 21 7V8H3V7C3 6.20435 3.31607 5.44129 3.87868 4.87868C4.44129 4.31607 5.20435 4 6 4H7V3C7 2.73478 7.10536 2.48043 7.29289 2.29289C7.48043 2.10536 7.73478 2 8 2ZM3 10V19C3 19.7956 3.31607 20.5587 3.87868 21.1213C4.44129 21.6839 5.20435 22 6 22H18C18.7956 22 19.5587 21.6839 20.1213 21.1213C20.6839 20.5587 21 19.7956 21 19V10H3Z" />
@@ -62,7 +66,8 @@
                     <span>Пациенты</span>
                 </a>
 
-                <a href="{% url 'settings' %}" class="nav-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+                <a href="{% url 'settings' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill="currentColor"
                             d="M2.91528 10.4208C3.34973 9.07709 4.06544 7.84368 5.00979 6.7984C5.16949 6.62164 5.42002 6.55864 5.64433 6.63884L7.90113 7.44579C8.51299 7.66443 9.18624 7.34568 9.40489 6.73383C9.42639 6.67367 9.44295 6.61185 9.4544 6.5491L9.88435 4.18909C9.9271 3.95444 10.1073 3.76883 10.3406 3.71917C11.0232 3.57388 11.723 3.5 12.4321 3.5C13.1407 3.5 13.8401 3.57379 14.5223 3.71891C14.7555 3.76852 14.9357 3.95401 14.9785 4.18857L15.4097 6.549C15.5263 7.1882 16.1389 7.61188 16.7782 7.49531C16.841 7.48385 16.9028 7.46728 16.9629 7.44582L19.2198 6.63884C19.4441 6.55864 19.6946 6.62164 19.8543 6.7984C20.7987 7.84368 21.5144 9.07709 21.9488 10.4208C22.0221 10.6475 21.9515 10.896 21.7698 11.0502L19.9406 12.6032C19.4453 13.0238 19.3848 13.7662 19.8053 14.2615C19.8467 14.3102 19.8919 14.3554 19.9406 14.3968L21.7698 15.9498C21.9515 16.104 22.0221 16.3525 21.9488 16.5792C21.5144 17.9229 20.7987 19.1563 19.8543 20.2016C19.6946 20.3784 19.4441 20.4414 19.2198 20.3612L16.963 19.5542C16.3511 19.3356 15.6779 19.6543 15.4592 20.2662C15.4377 20.3263 15.4212 20.3882 15.4097 20.4512L14.9785 22.8114C14.9357 23.046 14.7555 23.2315 14.5223 23.2811C13.8401 23.4262 13.1407 23.5 12.4321 23.5C11.723 23.5 11.0232 23.4261 10.3406 23.2808C10.1073 23.2312 9.9271 23.0456 9.88435 22.8109L9.45442 20.451C9.33785 19.8118 8.72517 19.3881 8.08597 19.5047C8.02311 19.5162 7.9613 19.5327 7.90123 19.5542L5.64433 20.3612C5.42002 20.4414 5.16949 20.3784 5.00979 20.2016C4.06544 19.1563 3.34973 17.9229 2.91528 16.5792C2.84198 16.3525 2.91265 16.104 3.09427 15.9498L4.92349 14.3968C5.41877 13.9762 5.47935 13.2338 5.0588 12.7385C5.01744 12.6898 4.97219 12.6446 4.92352 12.6032L3.09427 11.0502C2.91265 10.896 2.84198 10.6475 2.91528 10.4208ZM10.0791 13.5C10.0791 14.7995 11.1326 15.8529 12.4321 15.8529C13.7316 15.8529 14.785 14.7995 14.785 13.5C14.785 12.2005 13.7316 11.1471 12.4321 11.1471C11.1326 11.1471 10.0791 12.2005 10.0791 13.5Z" />
@@ -116,13 +121,24 @@
                         <span class="notification-badge">1</span>
                     </div>
 
-                    <div class="user-avatar">
-                        {% if user.is_authenticated %}
-                        {{ user.username|make_list|first|upper }}
-                        {% else %}
-                        👤
-                        {% endif %}
-                    </div>
+
+                    <a href="{% url 'settings' %}" style="text-decoration: none; color: inherit;">
+                        <div class="user-avatar"
+                            style="overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            {% if user.is_authenticated %}
+                            {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="User"
+                                style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                            <span style="font-size: 1.2rem; font-weight: bold; color: #0067FF;">
+                                {{ user.first_name|first|upper|default:"D" }}
+                            </span>
+                            {% endif %}
+                            {% else %}
+                            👤
+                            {% endif %}
+                        </div>
+                    </a>
                 </div>
             </header>
 

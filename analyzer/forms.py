@@ -1,5 +1,5 @@
 from django import forms
-from .models import Doctor
+from .models import Doctor, Patient
 
 class UserRegistrationForm(forms.ModelForm):
     # Добавляем кастомное поле для ФИО
@@ -92,3 +92,19 @@ class DoctorProfileForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+class PatientForm(forms.ModelForm):
+    class Meta:
+        model = Patient
+        fields = ['first_name', 'last_name', 'middle_name', 'birth_date', 'gender', 'phone', 'email']
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'gender': forms.Select(attrs={'class': 'form-control'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Добавляем стили ко всем полям, чтобы было красиво
+        for field in self.fields:
+            if field != 'gender' and field != 'birth_date':
+                self.fields[field].widget.attrs.update({'class': 'form-control', 'placeholder': self.fields[field].label})

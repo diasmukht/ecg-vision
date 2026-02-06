@@ -1,12 +1,151 @@
 <!DOCTYPE html>
 {% extends 'analyzer/dashboard/base_dash.html' %}
-
-{% block title %}Пациенты{% endblock %}
-{% block page_name %}Список пациентов{% endblock %}
-
+{% load static %}
 {% block content %}
-<div style="background: #1a1a1a; padding: 40px; border-radius: 20px;">
-    <h2>Это страница Пациентов</h2>
-    <p style="color: #888;">База данных ваших пациентов.</p>
+<link rel="stylesheet" href="{% static 'css/patients.css' %}">
+
+<div class="patients-header">
+    <h1>Мои Пациенты</h1>
+
+    <div style="display: flex; gap: 15px;">
+        <form method="GET" class="search-box">
+            <span class="search-icon">
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M14.5 14.5L10.5 10.5M6.5 12.5C3.18629 12.5 0.5 9.81371 0.5 6.5C0.5 3.18629 3.18629 0.5 6.5 0.5C9.81371 0.5 12.5 3.18629 12.5 6.5C12.5 9.81371 9.81371 12.5 6.5 12.5Z"
+                        stroke="white" />
+                </svg>
+            </span>
+            <input type="text" name="search" placeholder="Поиск по фамилии..." value="{{ search_query }}">
+        </form>
+
+        <button class="btn-add" onclick="openModal()">
+            <span>+</span> Новый пациент
+        </button>
+    </div>
 </div>
+
+{% if messages %}
+{% for message in messages %}
+<div style="padding: 15px; background: #515151; color: #155724; border-radius: 10px; margin-bottom: 20px;">
+    {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="table-container">
+    {% if patients %}
+    <table>
+        <thead>
+            <tr>
+                <th>Пациент</th>
+                <th>Возраст</th>
+                <th>Пол</th>
+                <th>Телефон</th>
+                <th>Дата регистрации</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in patients %}
+            <tr>
+                <td>
+                    <strong>{{ p.last_name }} {{ p.first_name }}</strong><br>
+                    <small style="color: #999;">{{ p.middle_name }}</small>
+                </td>
+                <td>{{ p.age }} лет</td>
+                <td>
+                    <span class="gender-badge {% if p.gender == 'M' %}gender-m{% else %}gender-f{% endif %}">
+                        {{ p.get_gender_display }}
+                    </span>
+                </td>
+                <td>{{ p.phone }}</td>
+                <td>{{ p.created_at|date:"d.m.Y" }}</td>
+                <td>
+                    <a href="#" class="action-btn">Карта ➜</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="text-align: center; padding: 40px; color: #999;">
+        <p>У вас пока нет пациентов.</p>
+        <p>Нажмите кнопку "Новый пациент", чтобы создать карточку.</p>
+    </div>
+    {% endif %}
+</div>
+
+<div class="modal-overlay" id="patientModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2>Новый пациент</h2>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Фамилия</label>
+                    {{ form.last_name }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Имя</label>
+                    {{ form.first_name }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Отчество</label>
+                {{ form.middle_name }}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Дата рождения</label>
+                    {{ form.birth_date }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Пол</label>
+                    {{ form.gender }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Телефон</label>
+                {{ form.phone }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email (необязательно)</label>
+                {{ form.email }}
+            </div>
+
+            <button type="submit" class="btn-add" style="width: 100%; justify-content: center; margin-top: 20px;">
+                Сохранить пациента
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Скрипт для открытия/закрытия модалки
+    function openModal() {
+        document.getElementById('patientModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('patientModal').style.display = 'none';
+    }
+
+    // Закрытие по клику вне окна
+    window.onclick = function (event) {
+        if (event.target == document.getElementById('patientModal')) {
+            closeModal();
+        }
+    }
+</script>
 {% endblock %}

@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import UserRegistrationForm, DoctorProfileForm
+from .forms import UserRegistrationForm, DoctorProfileForm, PatientForm
+from .models import Patient
 from django.contrib.auth.forms import AuthenticationForm
 
 # Landing
@@ -104,3 +105,35 @@ def dashboard_settings(request):
         form = DoctorProfileForm(instance=user)
 
     return render(request, 'analyzer/dashboard/settings.html', {'form': form})
+
+
+@login_required(login_url='login')
+def dashboard_patients(request):
+
+    if request.method == 'POST':
+        form = PatientForm(request.POST)
+        if form.is_valid():
+            patient = form.save(commit=False)
+            patient.doctor = request.user  
+            patient.save()
+            messages.success(request, f"Пациент {patient.last_name} успешно добавлен!")
+            return redirect('patients')
+        else:
+            messages.error(request, "Ошибка при добавлении. Проверьте данные.")
+    else:
+        form = PatientForm()
+
+    
+    patients = Patient.objects.filter(doctor=request.user).order_by('-created_at')
+
+    
+    search_query = request.GET.get('search', '')
+    if search_query:
+        patients = patients.filter(last_name__icontains=search_query)
+
+    context = {
+        'patients': patients,
+        'form': form,
+        'search_query': search_query
+    }
+    return render(request, 'analyzer/dashboard/patients.html', context)

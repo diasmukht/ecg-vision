@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import UserRegistrationForm, DoctorProfileForm, PatientForm
-from .models import Patient
+from .forms import ECGUploadForm, UserRegistrationForm, DoctorProfileForm, PatientForm
+from .models import Patient, ECGExamination
 from django.contrib.auth.forms import AuthenticationForm
+from .ai_module import ECGService
+import pandas as pd
+import json
 
 # Landing
 def landing(request):
@@ -74,7 +77,10 @@ def dashboard_main(request):
 
 @login_required(login_url='login')
 def dashboard_archive(request):
-    return render(request, 'analyzer/dashboard/archive.html')
+    
+    examinations = ECGExamination.objects.filter(doctor=request.user).order_by('-created_at')
+    
+    return render(request, 'analyzer/dashboard/archive.html', {'examinations': examinations})
 
 @login_required(login_url='login')
 def dashboard_check_ecg(request):
@@ -137,3 +143,81 @@ def dashboard_patients(request):
         'search_query': search_query
     }
     return render(request, 'analyzer/dashboard/patients.html', context)
+
+
+# 1. ОБНОВЛЯЕМ ЭТУ ФУНКЦИЮ (меняем redirect)
+@login_required(login_url='login')
+def dashboard_check_ecg(request):
+    if request.method == 'POST':
+        form = ECGUploadForm(request.user, request.POST, request.FILES)
+        if form.is_valid():
+            exam = form.save(commit=False)
+            exam.doctor = request.user
+            exam.status = 'pending'
+            exam.save()
+
+            try:
+                # ... ТВОЙ КОД ЗАПУСКА ИИ (оставляем как есть) ...
+                file_path = exam.ecg_file.path
+                results = ECGService.analyze_file(file_path)
+                
+                # Сохранение метрик (оставляем как есть)
+                metrics = results.get('metrics', {})
+                exam.hr = metrics.get('hr')
+                exam.p_duration = metrics.get('p_duration')
+                exam.qrs_duration = metrics.get('qrs_duration')
+                exam.pq_interval = metrics.get('pq_interval')
+                exam.qt_interval = metrics.get('qt_interval')
+                exam.ai_report_json = results.get('ai_report', [])
+                risk = results.get('risk_score', 0)
+                
+                if risk > 50: exam.status = 'warning'
+                elif risk > 0: exam.status = 'pathology'
+                else: exam.status = 'healthy'
+
+                exam.save()
+                
+                # !!! ИЗМЕНЕНИЕ ЗДЕСЬ !!!
+                # Вместо messages.success и редиректа в архив -> идем на анализ
+                return redirect('ecg_analysis', pk=exam.pk)
+
+            except Exception as e:
+                print(f"Ошибка: {e}")
+                exam.status = 'error'
+                exam.save()
+                messages.error(request, "Ошибка обработки")
+    else:
+        form = ECGUploadForm(request.user)
+
+    return render(request, 'analyzer/dashboard/check_ecg.html', {'form': form})
+
+
+# 2. НОВАЯ ФУНКЦИЯ: СТРАНИЦА АНАЛИЗА (ГРАФИКИ)
+@login_required(login_url='login')
+def ecg_analysis_view(request, pk):
+    exam = ECGExamination.objects.get(pk=pk)
+    
+
+    try:
+        df = pd.read_csv(exam.ecg_file.path)
+
+        signal_data = df.iloc[:21600, 0].tolist() 
+    except:
+        signal_data = []
+
+
+    context = {
+        'exam': exam,
+        'patient': exam.patient,
+        'doctor': exam.doctor,
+        'signal_data': signal_data, 
+        'ai_report': exam.ai_report_json or []
+    }
+    return render(request, 'analyzer/dashboard/analysis.html', context)
+
+
+# 3. НОВАЯ ФУНКЦИЯ: ПЕЧАТНЫЙ ОТЧЕТ
+@login_required(login_url='login')
+def ecg_report_view(request, pk):
+    exam = ECGExamination.objects.get(pk=pk)
+    return render(request, 'analyzer/dashboard/report.html', {'exam': exam})

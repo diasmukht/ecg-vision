@@ -1,12 +1,215 @@
-<!DOCTYPE html>
+<!doctype html>
 {% extends 'analyzer/dashboard/base_dash.html' %}
+{% load static %}
 
-{% block title %}Архив{% endblock %}
-{% block page_name %}Архив анализов{% endblock %}
+
 
 {% block content %}
-<div style="background: #1a1a1a; padding: 40px; border-radius: 20px;">
-    <h2>Это страница Архива</h2>
-    <p style="color: #888;">Здесь будет список старых записей ЭКГ.</p>
+<style>
+    /* === ТВОЙ СТИЛЬ (Dark Mode) === */
+    .patients-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .search-box {
+        position: relative;
+        width: 300px;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 10px 15px 10px 40px;
+        border: 1px solid #2a2a2a;
+        border-radius: 10px;
+        outline: none;
+        transition: border-color 0.3s;
+        background: white; /* Или прозрачный, если нужен совсем темный */
+    }
+
+    .search-box input:focus {
+        border-color: #ff0062;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #adb5bd;
+    }
+
+    .btn-add {
+        background: #FF3B5C;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .btn-add:hover {
+        background: #ab2138;
+    }
+
+    /* Таблица */
+    .table-container {
+        background: #1a1a1a;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        text-align: left;
+        padding: 15px;
+        color: #6c757d;
+        font-weight: 600;
+        border-bottom: 2px solid #333; /* Чуть темнее для контраста */
+    }
+
+    td {
+        padding: 15px;
+        border-bottom: 1px solid #333;
+        color: #ffffff;
+        vertical-align: middle;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Бейджи статусов (Стиль как у gender) */
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-healthy {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-pathology {
+        background: #ffb4cd; /* Розовый фон как у gender-f */
+        color: #FF3B5C;       /* Красный текст */
+    }
+
+    .status-warning {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-pending {
+        background: #e2e3e5;
+        color: #383d41;
+    }
+
+    .action-btn {
+        padding: 5px 10px;
+        border-radius: 8px;
+        color: #FF3B5C;
+        text-decoration: none;
+        transition: background 0.2s;
+        cursor: pointer;
+    }
+
+    .action-btn:hover {
+        background: #FF3B5C;
+        color: #ffffff;
+    }
+</style>
+
+<div class="patients-header">
+    <h1>Архив Диагностики</h1>
+
+    <div style="display: flex; gap: 15px;">
+        <form method="GET" class="search-box">
+            <span class="search-icon">
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14.5 14.5L10.5 10.5M6.5 12.5C3.18629 12.5 0.5 9.81371 0.5 6.5C0.5 3.18629 3.18629 0.5 6.5 0.5C9.81371 0.5 12.5 3.18629 12.5 6.5C12.5 9.81371 9.81371 12.5 6.5 12.5Z" stroke="#999" />
+                </svg>
+            </span>
+            <input type="text" name="search" placeholder="Поиск записи..." value="">
+        </form>
+
+        <a href="{% url 'check_ecg' %}" class="btn-add">
+            <span>+</span> Новое ЭКГ
+        </a>
+    </div>
 </div>
+
+<div class="table-container">
+    {% if examinations %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Пациент</th>
+                <th>Дата</th>
+                <th>Результат ИИ</th>
+                <th>ЧСС</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exam in examinations %}
+            <tr>
+                <td style="color: #666;">#{{ exam.id }}</td>
+                <td>
+                    <strong>{{ exam.patient.last_name }} {{ exam.patient.first_name }}</strong><br>
+                    <small style="color: #999;">{{ exam.patient.age }} лет</small>
+                </td>
+                <td>{{ exam.created_at|date:"d.m.Y H:i" }}</td>
+                <td>
+                    {% if exam.status == 'healthy' %}
+                        <span class="status-badge status-healthy">Здоров</span>
+                    {% elif exam.status == 'pathology' %}
+                        <span class="status-badge status-pathology">Патология</span>
+                    {% elif exam.status == 'warning' %}
+                        <span class="status-badge status-warning">Внимание</span>
+                    {% else %}
+                        <span class="status-badge status-pending">В обработке</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if exam.hr %}
+                        {{ exam.hr }} уд/мин
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'ecg_analysis' exam.pk %}" class="action-btn">
+                        Открыть ➜
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="text-align: center; padding: 40px; color: #999;">
+        <p>Архив пуст.</p>
+        <p>Нажмите "Новое ЭКГ", чтобы провести первую диагностику.</p>
+    </div>
+    {% endif %}
+</div>
+
 {% endblock %}

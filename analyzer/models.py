@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 import datetime
 
+
 # 1. МОДЕЛЬ ВРАЧА (Расширяем стандартного юзера)
 class Doctor(AbstractUser):
     # ФИО (first_name, last_name уже есть в AbstractUser, добавим отчество)
@@ -84,3 +85,6 @@ class ECGExamination(models.Model):
 
     def __str__(self):
         return f"Запись #{self.id} - {self.patient.last_name}"
+    
+
+

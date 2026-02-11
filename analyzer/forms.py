@@ -1,5 +1,5 @@
 from django import forms
-from .models import Doctor, Patient
+from .models import Doctor, Patient, ECGExamination
 
 class UserRegistrationForm(forms.ModelForm):
     # Добавляем кастомное поле для ФИО
@@ -108,3 +108,25 @@ class PatientForm(forms.ModelForm):
         for field in self.fields:
             if field != 'gender' and field != 'birth_date':
                 self.fields[field].widget.attrs.update({'class': 'form-control', 'placeholder': self.fields[field].label})
+
+
+ 
+
+
+
+class ECGUploadForm(forms.ModelForm):
+    class Meta:
+        model = ECGExamination
+        fields = ['patient', 'ecg_file', 'rhythm_type', 'conclusion']
+        widgets = {
+            'patient': forms.Select(attrs={'class': 'form-control'}),
+            'ecg_file': forms.FileInput(attrs={'class': 'form-control', 'accept': '.csv'}), # Только CSV
+            'rhythm_type': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Например: Синусовый'}),
+            'conclusion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Предварительное заключение врача...'}),
+        }
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['patient'].queryset = Patient.objects.filter(doctor=user)
+        self.fields['patient'].empty_label = "Выберите пациента"

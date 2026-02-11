@@ -1,11 +1,198 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load static %}
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Отчет #{{ exam.id }}</title>
+    <style>
+        body {
+            background: #555; /* Темный фон вокруг листа */
+            font-family: 'Times New Roman', serif;
+            margin: 0;
+            padding: 40px;
+        }
+        .a4-page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 20mm;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .header {
+            border-bottom: 2px solid #000;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0067FF;
+        }
+        
+        .contact-info {
+            font-size: 12px;
+            color: #555;
+            text-align: right;
+        }
+
+        .record-info {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        .label { color: #666; width: 120px; display: inline-block; }
+
+        .metrics-box {
+            border: 1px solid #000;
+            padding: 15px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-family: monospace;
+            font-size: 16px;
+        }
+
+        .conclusion-box {
+            background: #f9f9f9;
+            padding: 15px;
+            min-height: 100px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20mm;
+            left: 20mm;
+            right: 20mm;
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .a4-page { box-shadow: none; margin: 0; width: 100%; }
+            .no-print { display: none; }
+        }
+        
+        .btn-print {
+            position: fixed;
+            top: 20px; right: 20px;
+            background: #0067FF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-family: sans-serif;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    
+
+    <button class="btn-print no-print" onclick="window.print()">🖨 Печать / PDF</button>
+
+    <div class="a4-page">
+        <div class="header">
+            <div>
+                <div class="logo-text">ECG_Vision</div>
+                <div style="font-size: 12px; margin-top: 5px;">Система ИИ-диагностики</div>
+            </div>
+            <div class="contact-info">
+                ecg@mail.com<br>
+                +7 705 436 6705<br>
+                Алматы, Казахстан
+            </div>
+        </div>
+
+        <div class="record-info">
+            Запись #{{ exam.id }}<br>
+            Дата: {{ exam.created_at|date:"d.m.Y / H:i" }}
+        </div>
+
+        <div class="section-title">Информация о пациенте</div>
+        <div class="info-grid">
+            <div>
+                <span class="label">Пациент:</span> <strong>{{ exam.patient.full_name }}</strong>
+            </div>
+            <div>
+                <span class="label">Врач:</span> {{ exam.doctor.get_full_name_rus }}
+            </div>
+            <div>
+                <span class="label">Дата рождения:</span> {{ exam.patient.birth_date|date:"d.m.Y" }} ({{ exam.patient.age }} лет)
+            </div>
+            <div>
+                <span class="label">Телефон:</span> {{ exam.patient.phone }}
+            </div>
+            <div>
+                <span class="label">Пол:</span> {{ exam.patient.get_gender_display }}
+            </div>
+        </div>
+
+        <div class="section-title">Протокол исследования</div>
+        <div>Электрокардиограмма от {{ exam.created_at|date:"d.m.Y" }}</div>
+        
+        <div class="metrics-box">
+            <div>QRS: <strong>{{ exam.qrs_duration|default:"-" }} c</strong></div>
+            <div>P: <strong>{{ exam.p_duration|default:"-" }} c</strong></div>
+            <div>PQ: <strong>{{ exam.pq_interval|default:"-" }} c</strong></div>
+            <div>QT: <strong>{{ exam.qt_interval|default:"-" }} c</strong></div>
+            <div>ЧСС: <strong>{{ exam.hr|default:"-" }} уд/мин</strong></div>
+        </div>
+
+        <div class="section-title">Заключение</div>
+        
+        <p><strong>Ритм:</strong> {{ exam.rhythm_type }}</p>
+        
+        <div class="conclusion-box">
+            {% if exam.status == 'healthy' %}
+                Патологий не выявлено. Показатели в пределах нормы.
+            {% elif exam.status == 'warning' %}
+                Выявлены нарушения ритма. Рекомендуется дополнительное обследование (Холтер).
+                <br><br>
+                Зафиксированы эпизоды аритмии (см. детализацию ИИ).
+            {% else %}
+                {{ exam.conclusion|default:"Автоматическое заключение: Требуется проверка врачом." }}
+            {% endif %}
+            
+            {% if exam.conclusion %}
+                <br><br><strong>Комментарий врача:</strong><br>
+                {{ exam.conclusion }}
+            {% endif %}
+        </div>
+
+        <div class="footer">
+            Данное заключение сформировано автоматически системой ECG_Vision с поддержкой ИИ.<br>
+            Не является окончательным диагнозом. Требуется консультация специалиста.
+        </div>
+    </div>
+
 </body>
 </html>

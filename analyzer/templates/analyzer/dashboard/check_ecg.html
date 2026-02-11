@@ -1,12 +1,94 @@
-<!DOCTYPE html>
+<!Doctype html>
 {% extends 'analyzer/dashboard/base_dash.html' %}
-
-{% block title %}Проверка{% endblock %}
-{% block page_name %}Проверка ЭКГ{% endblock %}
+{% load static %}
 
 {% block content %}
-<div style="background: #1a1a1a; padding: 40px; border-radius: 20px;">
-    <h2>Это страница Проверки</h2>
-    <p style="color: #888;">Здесь будет инструмент анализа новой ЭКГ.</p>
+<style>
+    .upload-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+    }
+    .upload-card {
+        background: white;
+        padding: 50px;
+        border-radius: 30px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+        width: 600px;
+        text-align: center;
+    }
+    .upload-icon {
+        width: 80px; height: 80px;
+        background: #f0f4f8;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 20px;
+        color: #0067FF;
+    }
+    .custom-file-upload {
+        border: 2px dashed #e1e5eb;
+        border-radius: 15px;
+        padding: 40px;
+        margin: 20px 0;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .custom-file-upload:hover {
+        border-color: #0067FF;
+        background: #f8fbff;
+    }
+    .btn-next {
+        width: 100%;
+        padding: 15px;
+        background: #0067FF;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        cursor: pointer;
+    }
+</style>
+
+<div class="upload-container">
+    <div class="upload-card">
+        <div class="upload-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        </div>
+        <h2>Загрузка ЭКГ</h2>
+        <p style="color: #888;">Выберите пациента и файл .csv для анализа</p>
+
+        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            {% csrf_token %}
+            
+            <div style="text-align: left; margin-bottom: 15px;">
+                <label style="font-weight: 600; color: #444;">Пациент</label>
+                {{ form.patient }}
+            </div>
+
+            <input type="file" name="ecg_file" id="real-file" hidden accept=".csv">
+            
+            <div class="custom-file-upload" onclick="document.getElementById('real-file').click()">
+                <span id="file-text">Нажмите, чтобы выбрать файл</span>
+            </div>
+
+            <div style="display:none;">
+                {{ form.rhythm_type }}
+                {{ form.conclusion }}
+            </div>
+
+            <button type="submit" class="btn-next" onclick="this.innerHTML='Анализ...'">Начать диагностику</button>
+        </form>
+    </div>
 </div>
+
+<script>
+    document.getElementById('real-file').addEventListener('change', function() {
+        if (this.files[0]) {
+            document.getElementById('file-text').innerText = "Выбран: " + this.files[0].name;
+            document.getElementById('file-text').style.color = "#0067FF";
+            document.getElementById('file-text').style.fontWeight = "bold";
+        }
+    });
+</script>
 {% endblock %}

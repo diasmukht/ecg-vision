@@ -32,7 +32,7 @@
 }
 
 .btn-add {
-    background: #0067FF;
+    background: #FF3B5C;
     color: white;
     padding: 10px 20px;
     border-radius: 10px;
@@ -47,12 +47,12 @@
 }
 
 .btn-add:hover {
-    background: #0056d6;
+    background: #ab2138;
 }
 
 /* Таблица */
 .table-container {
-    background: white;
+    background: #1a1a1a;
     border-radius: 20px;
     padding: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
@@ -75,7 +75,7 @@ th {
 td {
     padding: 15px;
     border-bottom: 1px solid #f0f4f8;
-    color: #1a1a1a;
+    color: #ffffff;
     vertical-align: middle;
 }
 
@@ -91,26 +91,26 @@ tr:last-child td {
 }
 
 .gender-m {
-    background: #e3f2fd;
+    background: #b1deff;
     color: #0067FF;
 }
 
 .gender-f {
-    background: #fce4ec;
-    color: #e91e63;
+    background: #ffb4cd;
+    color: #FF3B5C;
 }
 
 .action-btn {
     padding: 5px 10px;
     border-radius: 8px;
-    color: #6c757d;
+    color: #FF3B5C;
     text-decoration: none;
     transition: background 0.2s;
 }
 
 .action-btn:hover {
-    background: #f0f4f8;
-    color: #0067FF;
+    background: #FF3B5C;
+    color: #ffffff;
 }
 
 /* МОДАЛЬНОЕ ОКНО */

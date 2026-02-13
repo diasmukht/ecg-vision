@@ -1,6 +1,9 @@
-<!Doctype html>
+<!DOCTYPE html>
 {% extends 'analyzer/dashboard/base_dash.html' %}
 {% load static %}
+
+{% block title %}Загрузка ЭКГ{% endblock %}
+{% block page_name %}Новая диагностика{% endblock %}
 
 {% block content %}
 <style>
@@ -8,7 +11,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 80vh;
+        min-height: 70vh;
     }
     .upload-card {
         background: white;
@@ -17,6 +20,7 @@
         box-shadow: 0 20px 60px rgba(0,0,0,0.05);
         width: 600px;
         text-align: center;
+        border: 1px solid #e1e5eb;
     }
     .upload-icon {
         width: 80px; height: 80px;
@@ -33,10 +37,11 @@
         margin: 20px 0;
         cursor: pointer;
         transition: all 0.3s;
+        background: #fdfdfd;
     }
     .custom-file-upload:hover {
         border-color: #0067FF;
-        background: #f8fbff;
+        background: #f0f7ff;
     }
     .btn-next {
         width: 100%;
@@ -46,30 +51,79 @@
         border: none;
         border-radius: 12px;
         font-size: 1.1rem;
+        font-weight: 600;
         cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 10px;
+    }
+    .btn-next:hover {
+        background: #0056d6;
+    }
+    
+    /* Стили для селекта пациента */
+    select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e1e5eb;
+        border-radius: 10px;
+        font-size: 1rem;
+        margin-top: 5px;
+        background: white;
+        outline: none;
+    }
+    select:focus {
+        border-color: #0067FF;
+    }
+
+    /* Сообщения */
+    .alert {
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+    .alert-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
     }
 </style>
 
 <div class="upload-container">
     <div class="upload-card">
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-error">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <div class="upload-icon">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
         </div>
-        <h2>Загрузка ЭКГ</h2>
-        <p style="color: #888;">Выберите пациента и файл .csv для анализа</p>
+        
+        <h2 style="margin-bottom: 10px;">Загрузка ЭКГ</h2>
+        <p style="color: #888; margin-bottom: 30px;">Выберите пациента и файл .csv для анализа</p>
 
-        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+        <form method="POST" enctype="multipart/form-data" id="uploadForm" onsubmit="showLoader()">
             {% csrf_token %}
             
-            <div style="text-align: left; margin-bottom: 15px;">
-                <label style="font-weight: 600; color: #444;">Пациент</label>
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="font-weight: 600; color: #444; font-size: 0.9rem;">Выберите пациента</label>
                 {{ form.patient }}
             </div>
 
-            <input type="file" name="ecg_file" id="real-file" hidden accept=".csv">
+            <input type="file" name="ecg_file" id="real-file" hidden accept=".csv" required>
             
             <div class="custom-file-upload" onclick="document.getElementById('real-file').click()">
-                <span id="file-text">Нажмите, чтобы выбрать файл</span>
+                <div id="upload-content">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" style="margin-bottom: 10px;"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                    <br>
+                    <span id="file-text" style="color: #666; font-weight: 500;">Нажмите, чтобы выбрать файл</span>
+                </div>
             </div>
 
             <div style="display:none;">
@@ -77,18 +131,46 @@
                 {{ form.conclusion }}
             </div>
 
-            <button type="submit" class="btn-next" onclick="this.innerHTML='Анализ...'">Начать диагностику</button>
+            <button type="submit" class="btn-next" id="submitBtn">Начать диагностику</button>
         </form>
     </div>
 </div>
 
 <script>
+    // Показать имя файла
     document.getElementById('real-file').addEventListener('change', function() {
         if (this.files[0]) {
-            document.getElementById('file-text').innerText = "Выбран: " + this.files[0].name;
-            document.getElementById('file-text').style.color = "#0067FF";
-            document.getElementById('file-text').style.fontWeight = "bold";
+            const fileName = this.files[0].name;
+            document.getElementById('file-text').innerHTML = `<span style="color: #0067FF; font-weight: bold;">${fileName}</span>`;
+            document.querySelector('.custom-file-upload').style.borderColor = "#0067FF";
+            document.querySelector('.custom-file-upload').style.background = "#f0f7ff";
         }
     });
+
+    // Анимация кнопки при отправке
+    function showLoader() {
+        const btn = document.getElementById('submitBtn');
+        btn.innerHTML = `
+            <svg class="spinner" viewBox="0 0 50 50" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 10px;">
+                <circle cx="25" cy="25" r="20" fill="none" stroke="white" stroke-width="5"></circle>
+            </svg>
+            Анализ данных...
+        `;
+        btn.style.opacity = "0.8";
+        btn.style.cursor = "wait";
+    }
 </script>
+
+<style>
+    .spinner circle {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: 0;
+        animation: spinner 1.5s ease-in-out infinite;
+    }
+    @keyframes spinner {
+        0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; }
+        50% { stroke-dasharray: 90, 150; stroke-dashoffset: -40px; }
+        100% { stroke-dasharray: 90, 150; stroke-dashoffset: -120px; }
+    }
+</style>
 {% endblock %}

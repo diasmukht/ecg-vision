@@ -1,431 +1,359 @@
 <!DOCTYPE html>
-
 {% extends 'analyzer/dashboard/base_dash.html' %}
-
 {% load static %}
 
-
+{% block title %}Анализ ЭКГ #{{ exam.id }}{% endblock %}
+{% block page_name %}Детальный анализ{% endblock %}
 
 {% block content %}
-
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-
-
 <style>
-
-
-
-.dashboard-wrapper {
-
-background-color: #f4f6f9;
-
-padding: 20px;
-
-border-radius: 10px;
-
-color: #333;
-
-}
-
-
-
-.analysis-header {
-
-display: flex;
-
-justify-content: space-between;
-
-background: white;
-
-padding: 25px 30px;
-
-border-radius: 15px;
-
-box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-
-margin-bottom: 25px;
-
-border-left: 5px solid #0067FF;
-
-}
-
-
-.info-block h3 { margin: 0 0 8px 0; font-size: 1.2rem; color: #222; }
-
-.info-block p { margin: 0; color: #555; font-size: 0.95rem; line-height: 1.5; }
-
-
-.chart-container {
-
-background: white;
-
-padding: 20px;
-
-border-radius: 15px;
-
-box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-
-margin-bottom: 25px;
-
-height: 450px;
-
-position: relative;
-
-}
-
-
-
-.windows-container {
-
-background: white;
-
-border-radius: 15px;
-
-padding: 25px;
-
-box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-
-}
-
-
-
-.section-title {
-
-font-size: 1.3rem;
-
-font-weight: 700;
-
-margin-bottom: 20px;
-
-color: #2c3e50;
-
-border-bottom: 2px solid #f0f4f8;
-
-padding-bottom: 10px;
-
-}
-
-
-
-.window-item {
-
-display: flex;
-
-justify-content: space-between;
-
-align-items: center;
-
-padding: 15px;
-
-border-bottom: 1px solid #f0f4f8;
-
-transition: background 0.2s;
-
-}
-
-.window-item:hover { background: #f8fbff; }
-
-
-.status-badge {
-
-padding: 6px 15px;
-
-border-radius: 20px;
-
-font-weight: bold;
-
-font-size: 0.9rem;
-
-display: inline-flex;
-
-align-items: center;
-
-gap: 5px;
-
-}
-
-.status-norma { background: #e3f2fd; color: #0067FF; }
-
-.status-pathology { background: #ffebee; color: #e91e63; }
-
-
-
-.btn-show-segment {
-
-border: 1px solid #0067FF;
-
-background: white;
-
-color: #0067FF;
-
-padding: 8px 20px;
-
-border-radius: 8px;
-
-cursor: pointer;
-
-font-weight: 600;
-
-transition: all 0.2s;
-
-}
-
-.btn-show-segment:hover {
-
-background: #0067FF;
-
-color: white;
-
-box-shadow: 0 5px 15px rgba(0, 103, 255, 0.2);
-
-}
-
-
-
-.footer-actions {
-
-margin-top: 30px;
-
-text-align: right;
-
-}
-
-.btn-report {
-
-background: linear-gradient(135deg, #0067FF, #0056d6);
-
-color: white;
-
-padding: 15px 40px;
-
-text-decoration: none;
-
-border-radius: 12px;
-
-font-weight: 700;
-
-font-size: 1.1rem;
-
-box-shadow: 0 10px 20px rgba(0, 103, 255, 0.3);
-
-transition: transform 0.2s;
-
-display: inline-block;
-
-}
-
-.btn-report:hover { transform: translateY(-3px); }
-
+    /* === СТИЛИ АНАЛИЗА === */
+    :root {
+        --primary-blue: #0067FF;
+        --bg-light: #f4f7fe;
+        --text-dark: #2B3674;
+        --text-gray: #A3AED0;
+        --card-bg: #FFFFFF;
+        --border-color: #E0E5F2;
+    }
+
+    .analysis-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-bottom: 50px;
+    }
+
+    /* 1. ХЕДЕР (Информация) */
+    .analysis-header {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+    }
+
+    .header-left h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--primary-blue);
+        margin-bottom: 20px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 10px 30px;
+        font-size: 16px;
+    }
+
+    .info-label { color: var(--text-gray); font-weight: 500; }
+    .info-value { color: var(--text-dark); font-weight: 700; }
+
+    .header-right {
+        text-align: right;
+    }
+    .logo-text {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--primary-blue);
+        margin-bottom: 15px;
+        display: block;
+        letter-spacing: 1px;
+    }
+
+    /* 2. ПРОТОКОЛ */
+    .protocol-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+        border-bottom: 2px solid var(--bg-light);
+        padding-bottom: 10px;
+    }
+
+    .protocol-data {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .protocol-item {
+        background: var(--bg-light);
+        padding: 15px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .p-label { font-size: 14px; color: var(--text-gray); display: block; margin-bottom: 5px; }
+    .p-value { font-size: 20px; font-weight: 700; color: var(--text-dark); }
+
+    .rhythm-box {
+        background: #e6f7ff;
+        color: #0067FF;
+        padding: 15px;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 600;
+        border: 1px solid #b3dfff;
+    }
+
+    /* 3. ГРАФИК */
+    .chart-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+        height: 500px;
+    }
+    
+    .chart-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: var(--text-gray);
+    }
+
+    /* 4. СЕГМЕНТЫ (Временные окна) */
+    .segments-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+    }
+
+    .segment-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .segment-row:last-child { border-bottom: none; }
+
+    .seg-time {
+        font-family: 'Courier New', monospace;
+        font-weight: 700;
+        font-size: 16px;
+        color: var(--text-dark);
+        width: 150px;
+    }
+
+    .seg-status {
+        flex-grow: 1;
+        font-weight: 600;
+    }
+    
+    .status-norma { color: #05cd99; } /* Зеленый */
+    .status-pathology { color: #ee5d50; } /* Красный */
+    .status-pending { color: #ffce20; } /* Желтый */
+
+    .btn-show {
+        background: transparent;
+        border: 1px solid var(--primary-blue);
+        color: var(--primary-blue);
+        padding: 8px 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .btn-show:hover {
+        background: var(--primary-blue);
+        color: white;
+    }
+
+    /* 5. ФУТЕР (Кнопка отчета) */
+    .footer-actions {
+        text-align: right;
+        margin-top: 10px;
+    }
+
+    .btn-report {
+        background: linear-gradient(90deg, #0067FF 0%, #0056D2 100%);
+        color: white;
+        padding: 15px 40px;
+        border-radius: 15px;
+        font-size: 16px;
+        font-weight: 700;
+        text-decoration: none;
+        box-shadow: 0 10px 20px rgba(0, 103, 255, 0.2);
+        display: inline-block;
+        transition: transform 0.2s;
+    }
+    
+    .btn-report:hover {
+        transform: translateY(-2px);
+    }
 </style>
 
+<div class="analysis-wrapper">
 
+    <div class="analysis-header">
+        <div class="header-left">
+            <h1>Анализ ЭКГ #{{ exam.id }}</h1>
+            <div class="info-grid">
+                <span class="info-label">Пациент:</span>
+                <span class="info-value">{{ patient.last_name }} {{ patient.first_name }}</span>
+                
+                <span class="info-label">Возраст:</span>
+                <span class="info-value">{{ patient.age }} лет</span>
+                
+                <span class="info-label">Пол:</span>
+                <span class="info-value">{{ patient.get_gender_display }}</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <span class="logo-text">ECG VISION</span>
+            <div class="info-grid" style="grid-template-columns: auto; text-align: right; gap: 5px;">
+                <span class="info-value">Врач: {{ doctor.last_name }} {{ doctor.first_name }}</span>
+                <span class="info-label">{{ exam.created_at|date:"d.m.Y H:i" }}</span>
+            </div>
+        </div>
+    </div>
 
-<div class="dashboard-wrapper">
+    <div class="protocol-card">
+        <div class="section-title">Протокол исследования</div>
+        
+        <div class="protocol-data">
+            <div class="protocol-item">
+                <span class="p-label">QRS</span>
+                <span class="p-value">{{ metrics.qrs }} c</span>
+            </div>
+            <div class="protocol-item">
+                <span class="p-label">P</span>
+                <span class="p-value">{{ metrics.p }} c</span>
+            </div>
+            <div class="protocol-item">
+                <span class="p-label">PQ</span>
+                <span class="p-value">{{ metrics.pq }} c</span>
+            </div>
+            <div class="protocol-item">
+                <span class="p-label">QT</span>
+                <span class="p-value">{{ metrics.qt }} c</span>
+            </div>
+            <div class="protocol-item">
+                <span class="p-label">ЧСС</span>
+                <span class="p-value">{{ metrics.hr }} уд/мин</span>
+            </div>
+        </div>
 
-<div class="analysis-header">
+        <div class="rhythm-box">
+            {% if exam.status == 'healthy' %}
+                РИТМ СИНУСОВЫЙ, ПРАВИЛЬНЫЙ
+            {% else %}
+                НАРУШЕНИЕ РИТМА (см. детализацию)
+            {% endif %}
+        </div>
+    </div>
 
-<div class="info-block">
+    <div class="chart-card">
+        <div class="chart-meta">
+            <span>Скорость: 25 мм/сек</span>
+            <span>Амплитуда: 10 мм/мВ</span>
+            <span>Частота: 360 Гц</span>
+        </div>
+        <div id="ecgChart" style="width: 100%; height: 95%;"></div>
+    </div>
 
-<h3>Анализ ЭКГ #{{ exam.id }}</h3>
+    <div class="segments-card">
+        <div class="section-title">Временные интервалы</div>
+        
+        {% for seg in segments %}
+        <div class="segment-row">
+            <div class="seg-time">{{ seg.time_range }}</div>
+            <div class="seg-status {{ seg.css_class }}">
+                {{ seg.status }} 
+                {% if seg.details %}
+                    <span style="font-weight: 400; color: #707EAE; margin-left: 10px;">({{ seg.details }})</span>
+                {% endif %}
+            </div>
+            <button class="btn-show" onclick="zoomTo('{{ seg.start_sec }}')">
+                Показать на графике
+            </button>
+        </div>
+        {% endfor %}
+    </div>
 
-<p>Пациент: <strong>{{ patient.full_name }}</strong></p>
-
-<p>{{ patient.get_gender_display }}, {{ patient.age }} лет</p>
-
-</div>
-
-<div class="info-block" style="text-align: right;">
-
-<h3 style="color: #0067FF;">ECG VISION AI</h3>
-
-<p>Врач: {{ doctor.get_full_name_rus }}</p>
-
-<p>{{ exam.created_at|date:"d.m.Y H:i" }}</p>
-
-</div>
-
-</div>
-
-
-
-<div class="chart-container">
-
-<div id="ecgChart" style="width:100%; height:100%;"></div>
-
-</div>
-
-
-
-<div class="windows-container">
-
-<div class="section-title">Детализация по сегментам (ИИ)</div>
-
-
-{% for report in ai_report %}
-
-<div class="window-item">
-
-<div style="width: 180px; font-weight: 600; font-family: monospace; font-size: 1.1rem;">
-
-⏱ {{ report.time }}
-
-</div>
-
-
-<div style="flex-grow: 1;">
-
-{% if report.status == "Патология" %}
-
-<span class="status-badge status-pathology">
-
-⚠️ АРИТМИЯ ({{ report.conf }}%)
-
-</span>
-
-{% else %}
-
-<span class="status-badge status-norma">✅ НОРМА</span>
-
-{% endif %}
-
-</div>
-
-
-
-<button class="btn-show-segment" onclick="zoomToSegment('{{ report.time }}')">
-
-Показать на графике
-
-</button>
-
-</div>
-
-{% empty %}
-
-<div style="padding: 40px; text-align: center; color: #888;">
-
-<p>ИИ не нашел явных аномалий. Ритм стабилен.</p>
-
-</div>
-
-{% endfor %}
-
-</div>
-
-
-
-<div class="footer-actions">
-
-<a href="{% url 'ecg_report' exam.pk %}" class="btn-report">
-
-📄 Открыть финальный отчет
-
-</a>
+    <div class="footer-actions">
+        <a href="{% url 'ecg_report' exam.pk %}" class="btn-report">
+            Перейти к отчету ➜
+        </a>
+    </div>
 
 </div>
 
-</div>
-
-
-
-{{ signal_data|json_script:"ecg-signal-data" }}
-
-
+{{ signal_data|json_script:"ecg-signal" }}
 
 <script>
+    const rawSignal = JSON.parse(document.getElementById('ecg-signal').textContent);
+    const fs = 360; 
+    const timeAxis = rawSignal.map((_, i) => i / fs);
 
-const rawSignal = JSON.parse(document.getElementById('ecg-signal-data').textContent);
+    // Настройка графика Plotly
+    const trace = {
+        x: timeAxis,
+        y: rawSignal,
+        mode: 'lines',
+        line: { color: '#000000', width: 1.2 }, // Черная линия как на бумаге
+        name: 'ЭКГ'
+    };
 
-const fs = 360;
+    const layout = {
+        margin: { t: 10, r: 10, l: 40, b: 30 },
+        paper_bgcolor: 'white',
+        plot_bgcolor: 'white',
+        xaxis: {
+            title: 'Время (сек)',
+            gridcolor: '#ffcdd2', // Розовая сетка (медицинская)
+            gridwidth: 1,
+            dtick: 0.2, // Шаг 200 мс (большая клетка 5 мм)
+            zeroline: false,
+            range: [0, 5], // Показываем первые 5 сек по умолчанию
+            showspikes: true
+        },
+        yaxis: {
+            title: 'мВ',
+            gridcolor: '#ffcdd2',
+            gridwidth: 1,
+            zeroline: false,
+            fixedrange: false // Разрешаем зум по Y
+        },
+        dragmode: 'pan' // Режим руки
+    };
 
+    const config = {
+        responsive: true,
+        displayModeBar: true,
+        modeBarButtonsToRemove: ['lasso2d', 'select2d']
+    };
 
+    Plotly.newPlot('ecgChart', [trace], layout, config);
 
-let timeAxis = [];
-
-if (rawSignal && rawSignal.length > 0) {
-
-timeAxis = rawSignal.map((_, i) => i / fs);
-
-}
-
-
-
-const trace = {
-
-x: timeAxis,
-
-y: rawSignal,
-
-mode: 'lines',
-
-line: { color: '#0067FF', width: 1.5 },
-
-name: 'ЭКГ'
-
-};
-
-
-
-const layout = {
-
-title: { text: 'Отведение MLII (Визуализация)', font: { size: 18, color: '#333' } },
-
-margin: { t: 40, r: 20, l: 50, b: 40 },
-
-paper_bgcolor: 'white', /* Принудительно белый фон графика */
-
-plot_bgcolor: 'white',
-
-xaxis: {
-
-title: 'Время (сек)',
-
-gridcolor: '#f0f0f0',
-
-zerolinecolor: '#333',
-
-tickmode: 'linear', /* Чтобы цифры не слипались */
-
-dtick: 5 /* Шаг сетки 5 секунд */
-
-},
-
-yaxis: {
-
-title: 'мВ',
-
-gridcolor: '#f0f0f0',
-
-zeroline: false
-
-}
-
-};
-
-
-
-Plotly.newPlot('ecgChart', [trace], layout, {responsive: true});
-
-
-
-function zoomToSegment(startTimeStr) {
-
-const parts = startTimeStr.split(':');
-
-const startSec = parseInt(parts[0]) * 60 + parseInt(parts[1]);
-
-
-Plotly.relayout('ecgChart', {
-
-'xaxis.range': [startSec, startSec + 10],
-
-'yaxis.autorange': true
-
-});
-
-}
-
+    // Функция зума
+    function zoomTo(startSec) {
+        Plotly.relayout('ecgChart', {
+            'xaxis.range': [startSec, startSec + 5]
+        });
+    }
 </script>
 
 {% endblock %}

@@ -1,219 +1,431 @@
 <!DOCTYPE html>
+
 {% extends 'analyzer/dashboard/base_dash.html' %}
+
 {% load static %}
 
+
+
 {% block content %}
+
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
+
+
 <style>
-    /* ПРИНУДИТЕЛЬНЫЙ СВЕТЛЫЙ СТИЛЬ */
-    .dashboard-wrapper {
-        background-color: #f4f6f9; /* Светло-серый фон страницы */
-        padding: 20px;
-        border-radius: 10px;
-        color: #333; /* Темный текст */
-    }
 
-    .analysis-header {
-        display: flex;
-        justify-content: space-between;
-        background: white;
-        padding: 25px 30px;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        margin-bottom: 25px;
-        border-left: 5px solid #0067FF;
-    }
-    
-    .info-block h3 { margin: 0 0 8px 0; font-size: 1.2rem; color: #222; }
-    .info-block p { margin: 0; color: #555; font-size: 0.95rem; line-height: 1.5; }
-    
-    .chart-container {
-        background: white;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        margin-bottom: 25px;
-        height: 450px;
-        position: relative;
-    }
 
-    .windows-container {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    }
 
-    .section-title {
-        font-size: 1.3rem;
-        font-weight: 700;
-        margin-bottom: 20px;
-        color: #2c3e50;
-        border-bottom: 2px solid #f0f4f8;
-        padding-bottom: 10px;
-    }
+.dashboard-wrapper {
 
-    .window-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px;
-        border-bottom: 1px solid #f0f4f8;
-        transition: background 0.2s;
-    }
-    .window-item:hover { background: #f8fbff; }
-    
-    .status-badge {
-        padding: 6px 15px;
-        border-radius: 20px;
-        font-weight: bold;
-        font-size: 0.9rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-    }
-    .status-norma { background: #e3f2fd; color: #0067FF; }
-    .status-pathology { background: #ffebee; color: #e91e63; }
+background-color: #f4f6f9;
 
-    .btn-show-segment {
-        border: 1px solid #0067FF;
-        background: white;
-        color: #0067FF;
-        padding: 8px 20px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s;
-    }
-    .btn-show-segment:hover { 
-        background: #0067FF; 
-        color: white; 
-        box-shadow: 0 5px 15px rgba(0, 103, 255, 0.2);
-    }
+padding: 20px;
 
-    .footer-actions {
-        margin-top: 30px;
-        text-align: right;
-    }
-    .btn-report {
-        background: linear-gradient(135deg, #0067FF, #0056d6);
-        color: white;
-        padding: 15px 40px;
-        text-decoration: none;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 1.1rem;
-        box-shadow: 0 10px 20px rgba(0, 103, 255, 0.3);
-        transition: transform 0.2s;
-        display: inline-block;
-    }
-    .btn-report:hover { transform: translateY(-3px); }
+border-radius: 10px;
+
+color: #333;
+
+}
+
+
+
+.analysis-header {
+
+display: flex;
+
+justify-content: space-between;
+
+background: white;
+
+padding: 25px 30px;
+
+border-radius: 15px;
+
+box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+
+margin-bottom: 25px;
+
+border-left: 5px solid #0067FF;
+
+}
+
+
+.info-block h3 { margin: 0 0 8px 0; font-size: 1.2rem; color: #222; }
+
+.info-block p { margin: 0; color: #555; font-size: 0.95rem; line-height: 1.5; }
+
+
+.chart-container {
+
+background: white;
+
+padding: 20px;
+
+border-radius: 15px;
+
+box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+
+margin-bottom: 25px;
+
+height: 450px;
+
+position: relative;
+
+}
+
+
+
+.windows-container {
+
+background: white;
+
+border-radius: 15px;
+
+padding: 25px;
+
+box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+
+}
+
+
+
+.section-title {
+
+font-size: 1.3rem;
+
+font-weight: 700;
+
+margin-bottom: 20px;
+
+color: #2c3e50;
+
+border-bottom: 2px solid #f0f4f8;
+
+padding-bottom: 10px;
+
+}
+
+
+
+.window-item {
+
+display: flex;
+
+justify-content: space-between;
+
+align-items: center;
+
+padding: 15px;
+
+border-bottom: 1px solid #f0f4f8;
+
+transition: background 0.2s;
+
+}
+
+.window-item:hover { background: #f8fbff; }
+
+
+.status-badge {
+
+padding: 6px 15px;
+
+border-radius: 20px;
+
+font-weight: bold;
+
+font-size: 0.9rem;
+
+display: inline-flex;
+
+align-items: center;
+
+gap: 5px;
+
+}
+
+.status-norma { background: #e3f2fd; color: #0067FF; }
+
+.status-pathology { background: #ffebee; color: #e91e63; }
+
+
+
+.btn-show-segment {
+
+border: 1px solid #0067FF;
+
+background: white;
+
+color: #0067FF;
+
+padding: 8px 20px;
+
+border-radius: 8px;
+
+cursor: pointer;
+
+font-weight: 600;
+
+transition: all 0.2s;
+
+}
+
+.btn-show-segment:hover {
+
+background: #0067FF;
+
+color: white;
+
+box-shadow: 0 5px 15px rgba(0, 103, 255, 0.2);
+
+}
+
+
+
+.footer-actions {
+
+margin-top: 30px;
+
+text-align: right;
+
+}
+
+.btn-report {
+
+background: linear-gradient(135deg, #0067FF, #0056d6);
+
+color: white;
+
+padding: 15px 40px;
+
+text-decoration: none;
+
+border-radius: 12px;
+
+font-weight: 700;
+
+font-size: 1.1rem;
+
+box-shadow: 0 10px 20px rgba(0, 103, 255, 0.3);
+
+transition: transform 0.2s;
+
+display: inline-block;
+
+}
+
+.btn-report:hover { transform: translateY(-3px); }
+
 </style>
 
+
+
 <div class="dashboard-wrapper">
-    <div class="analysis-header">
-        <div class="info-block">
-            <h3>Анализ ЭКГ #{{ exam.id }}</h3>
-            <p>Пациент: <strong>{{ patient.full_name }}</strong></p>
-            <p>{{ patient.get_gender_display }}, {{ patient.age }} лет</p>
-        </div>
-        <div class="info-block" style="text-align: right;">
-            <h3 style="color: #0067FF;">ECG VISION AI</h3>
-            <p>Врач: {{ doctor.get_full_name_rus }}</p>
-            <p>{{ exam.created_at|date:"d.m.Y H:i" }}</p>
-        </div>
-    </div>
 
-    <div class="chart-container">
-        <div id="ecgChart" style="width:100%; height:100%;"></div>
-    </div>
+<div class="analysis-header">
 
-    <div class="windows-container">
-        <div class="section-title">Детализация по сегментам (ИИ)</div>
-        
-        {% for report in ai_report %}
-        <div class="window-item">
-            <div style="width: 180px; font-weight: 600; font-family: monospace; font-size: 1.1rem;">
-                ⏱ {{ report.time }}
-            </div>
-            
-            <div style="flex-grow: 1;">
-                {% if report.status == "Патология" %}
-                    <span class="status-badge status-pathology">
-                        ⚠️ АРИТМИЯ ({{ report.conf }}%)
-                    </span>
-                {% else %}
-                    <span class="status-badge status-norma">✅ НОРМА</span>
-                {% endif %}
-            </div>
+<div class="info-block">
 
-            <button class="btn-show-segment" onclick="zoomToSegment('{{ report.time }}')">
-                Показать на графике
-            </button>
-        </div>
-        {% empty %}
-        <div style="padding: 40px; text-align: center; color: #888;">
-            <p>ИИ не нашел явных аномалий. Ритм стабилен.</p>
-        </div>
-        {% endfor %}
-    </div>
+<h3>Анализ ЭКГ #{{ exam.id }}</h3>
 
-    <div class="footer-actions">
-        <a href="{% url 'ecg_report' exam.pk %}" class="btn-report">
-            📄 Открыть финальный отчет
-        </a>
-    </div>
+<p>Пациент: <strong>{{ patient.full_name }}</strong></p>
+
+<p>{{ patient.get_gender_display }}, {{ patient.age }} лет</p>
+
 </div>
+
+<div class="info-block" style="text-align: right;">
+
+<h3 style="color: #0067FF;">ECG VISION AI</h3>
+
+<p>Врач: {{ doctor.get_full_name_rus }}</p>
+
+<p>{{ exam.created_at|date:"d.m.Y H:i" }}</p>
+
+</div>
+
+</div>
+
+
+
+<div class="chart-container">
+
+<div id="ecgChart" style="width:100%; height:100%;"></div>
+
+</div>
+
+
+
+<div class="windows-container">
+
+<div class="section-title">Детализация по сегментам (ИИ)</div>
+
+
+{% for report in ai_report %}
+
+<div class="window-item">
+
+<div style="width: 180px; font-weight: 600; font-family: monospace; font-size: 1.1rem;">
+
+⏱ {{ report.time }}
+
+</div>
+
+
+<div style="flex-grow: 1;">
+
+{% if report.status == "Патология" %}
+
+<span class="status-badge status-pathology">
+
+⚠️ АРИТМИЯ ({{ report.conf }}%)
+
+</span>
+
+{% else %}
+
+<span class="status-badge status-norma">✅ НОРМА</span>
+
+{% endif %}
+
+</div>
+
+
+
+<button class="btn-show-segment" onclick="zoomToSegment('{{ report.time }}')">
+
+Показать на графике
+
+</button>
+
+</div>
+
+{% empty %}
+
+<div style="padding: 40px; text-align: center; color: #888;">
+
+<p>ИИ не нашел явных аномалий. Ритм стабилен.</p>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+
+<div class="footer-actions">
+
+<a href="{% url 'ecg_report' exam.pk %}" class="btn-report">
+
+📄 Открыть финальный отчет
+
+</a>
+
+</div>
+
+</div>
+
+
 
 {{ signal_data|json_script:"ecg-signal-data" }}
 
+
+
 <script>
-    const rawSignal = JSON.parse(document.getElementById('ecg-signal-data').textContent);
-    const fs = 360; 
 
-    let timeAxis = [];
-    if (rawSignal && rawSignal.length > 0) {
-        timeAxis = rawSignal.map((_, i) => i / fs);
-    }
+const rawSignal = JSON.parse(document.getElementById('ecg-signal-data').textContent);
 
-    const trace = {
-        x: timeAxis,
-        y: rawSignal,
-        mode: 'lines',
-        line: { color: '#0067FF', width: 1.5 },
-        name: 'ЭКГ'
-    };
+const fs = 360;
 
-    const layout = {
-        title: { text: 'Отведение MLII (Визуализация)', font: { size: 18, color: '#333' } },
-        margin: { t: 40, r: 20, l: 50, b: 40 },
-        paper_bgcolor: 'white', /* Принудительно белый фон графика */
-        plot_bgcolor: 'white',
-        xaxis: {
-            title: 'Время (сек)',
-            gridcolor: '#f0f0f0',
-            zerolinecolor: '#333',
-            tickmode: 'linear', /* Чтобы цифры не слипались */
-            dtick: 5            /* Шаг сетки 5 секунд */
-        },
-        yaxis: {
-            title: 'мВ',
-            gridcolor: '#f0f0f0',
-            zeroline: false
-        }
-    };
 
-    Plotly.newPlot('ecgChart', [trace], layout, {responsive: true});
 
-    function zoomToSegment(startTimeStr) {
-        const parts = startTimeStr.split(':');
-        const startSec = parseInt(parts[0]) * 60 + parseInt(parts[1]);
-        
-        Plotly.relayout('ecgChart', {
-            'xaxis.range': [startSec, startSec + 10],
-            'yaxis.autorange': true
-        });
-    }
+let timeAxis = [];
+
+if (rawSignal && rawSignal.length > 0) {
+
+timeAxis = rawSignal.map((_, i) => i / fs);
+
+}
+
+
+
+const trace = {
+
+x: timeAxis,
+
+y: rawSignal,
+
+mode: 'lines',
+
+line: { color: '#0067FF', width: 1.5 },
+
+name: 'ЭКГ'
+
+};
+
+
+
+const layout = {
+
+title: { text: 'Отведение MLII (Визуализация)', font: { size: 18, color: '#333' } },
+
+margin: { t: 40, r: 20, l: 50, b: 40 },
+
+paper_bgcolor: 'white', /* Принудительно белый фон графика */
+
+plot_bgcolor: 'white',
+
+xaxis: {
+
+title: 'Время (сек)',
+
+gridcolor: '#f0f0f0',
+
+zerolinecolor: '#333',
+
+tickmode: 'linear', /* Чтобы цифры не слипались */
+
+dtick: 5 /* Шаг сетки 5 секунд */
+
+},
+
+yaxis: {
+
+title: 'мВ',
+
+gridcolor: '#f0f0f0',
+
+zeroline: false
+
+}
+
+};
+
+
+
+Plotly.newPlot('ecgChart', [trace], layout, {responsive: true});
+
+
+
+function zoomToSegment(startTimeStr) {
+
+const parts = startTimeStr.split(':');
+
+const startSec = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+
+
+Plotly.relayout('ecgChart', {
+
+'xaxis.range': [startSec, startSec + 10],
+
+'yaxis.autorange': true
+
+});
+
+}
+
 </script>
+
 {% endblock %}

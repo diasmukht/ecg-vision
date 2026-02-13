@@ -1,10 +1,10 @@
-<!Doctype html>
+<!DOCTYPE html>
 {% extends 'analyzer/dashboard/base_dash.html' %}
 {% load static %}
 
+<link rel="stylesheet" href="{% static 'analyzer/dashboard/css/settings.css' %}">
+
 {% block content %}
-
-
 <div class="settings-container">
     
     <div class="profile-card">
@@ -13,21 +13,31 @@
                 <img src="{{ user.avatar.url }}" alt="Avatar">
             {% else %}
                 <div class="avatar-placeholder">
-                    {{ user.first_name|first|upper }}
+                    {{ user.first_name|first|upper|default:"U" }}
                 </div>
             {% endif %}
         </div>
-        <h2 class="profile-name">{{ user.last_name }} {{ user.first_name }}</h2>
-        <div class="profile-role">{{ user.specialization }}</div>
         
-        <p style="color: #888; font-size: 0.9rem; margin-top: 20px;">
+        <h2 class="profile-name">
+            {% if user.last_name or user.first_name %}
+                {{ user.last_name }} {{ user.first_name }}
+            {% else %}
+                Пользователь
+            {% endif %}
+        </h2>
+        
+        <div class="profile-role">
+            {{ user.specialization|default:"Врач-кардиолог" }}
+        </div>
+        
+        <p class="profile-description">
             Врач-диагност<br>
             ECG Vision System
         </p>
     </div>
 
     <div class="settings-form-card">
-        <h1 class="section-title">Настройки профиля</h1>
+        <h1 class="section-title">Редактирование данных</h1>
 
         {% if messages %}
             {% for message in messages %}
@@ -43,14 +53,16 @@
             <div class="form-grid">
                 <div class="form-group full-width">
                     <label class="form-label">ФИО (Полное имя)</label>
-                    {{ form.full_name.errors }}
-                    <input type="text" name="full_name" class="form-control" value="{{ form.full_name.value|default:'' }}" placeholder="Иванов Иван Иванович">
+                    {% if form.full_name.errors %}
+                        <div style="color: red; font-size: 0.8em; margin-bottom: 5px;">{{ form.full_name.errors }}</div>
+                    {% endif %}
+                    <input type="text" name="full_name" class="form-control" value="{{ form.full_name.value|default:user.get_full_name }}" placeholder="Иванов Иван Иванович">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Email (Логин)</label>
-                    <input type="email" name="email" class="form-control" value="{{ user.email }}" readonly style="background-color: #e9ecef; cursor: not-allowed;">
-                    <small style="color: #999;">Email изменить нельзя</small>
+                    <input type="email" name="email" class="form-control" value="{{ user.email }}" readonly>
+                    <small class="helper-text">Email изменить нельзя</small>
                 </div>
 
                 <div class="form-group">
@@ -63,19 +75,19 @@
                     <input type="text" name="specialization" class="form-control" value="{{ form.specialization.value|default:'Кардиолог' }}">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group full-width">
                     <label class="form-label">Фото профиля</label>
                     <div class="file-upload-wrapper">
-                        <input type="file" name="avatar" class="form-control" style="padding-top: 10px;">
+                        <input type="file" name="avatar" class="form-control" accept="image/*">
                     </div>
                 </div>
             </div>
 
             <button type="submit" class="btn-save">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                    <polyline points="7 3 7 8 15 8"></polyline>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16L21 8V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M17 21V13H7V21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7 3V8H15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 Сохранить изменения
             </button>

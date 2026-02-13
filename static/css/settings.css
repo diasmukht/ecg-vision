@@ -1,20 +1,21 @@
-/* Локальные стили для страницы настроек */
+/* Общий контейнер */
 .settings-container {
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 30px;
-    padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
 }
 
-/* Карточка профиля (Слева) */
+/* === КАРТОЧКА ПРОФИЛЯ (Слева) === */
 .profile-card {
-    background: #1a1a1a;
+    background: #FFFFFF;
     border-radius: 20px;
     padding: 30px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid #E5E7EB;
     height: fit-content;
 }
 
@@ -24,8 +25,9 @@
     margin: 0 auto 20px;
     border-radius: 50%;
     overflow: hidden;
-    border: 4px solid #3e3e3e;
+    border: 4px solid #F3F4F6; /* Светло-серая рамка */
     position: relative;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
 .avatar-wrapper img {
@@ -37,58 +39,68 @@
 .avatar-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #0067FF, #00a8ff);
+    background: linear-gradient(135deg, #458FF6, #2563EB); /* Синий градиент */
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 48px;
     color: white;
-    font-weight: bold;
+    font-weight: 700;
 }
 
 .profile-name {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    color: #e7e7e7;
-    margin-bottom: 15px;
+    color: #111827; /* Темный текст */
+    margin-bottom: 10px;
 }
 
 .profile-role {
-    color: #0067FF;
-    font-weight: 500;
+    color: #458FF6;
+    font-weight: 600;
     font-size: 0.9rem;
     margin-bottom: 20px;
-    background: rgba(0, 103, 255, 0.1);
+    background: rgba(69, 143, 246, 0.1); /* Светло-синий фон */
     display: inline-block;
-    padding: 5px 15px;
+    padding: 6px 16px;
     border-radius: 20px;
 }
 
-/* Форма (Справа) */
+.profile-description {
+    color: #6B7280; /* Серый текст */
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-top: 20px;
+    border-top: 1px solid #E5E7EB;
+    padding-top: 20px;
+}
+
+/* === ФОРМА НАСТРОЕК (Справа) === */
 .settings-form-card {
-    background: #1a1a1a;
+    background: #FFFFFF;
     border-radius: 20px;
     padding: 40px;
-    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid #E5E7EB;
 }
 
 .section-title {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 30px;
-    color: #e6e6e6;
-    border-bottom: 2px solid #f0f4f8;
-    padding-bottom: 15px;
+    color: #111827;
+    border-bottom: 1px solid #E5E7EB;
+    padding-bottom: 20px;
 }
 
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 24px;
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .form-group.full-width {
@@ -98,84 +110,138 @@
 .form-label {
     display: block;
     margin-bottom: 8px;
-    color: #888;
-    font-size: 0.9rem;
+    color: #374151; /* Темно-серый заголовок */
+    font-size: 0.95rem;
     font-weight: 500;
 }
 
 .form-control {
     width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #e1e5eb;
-    border-radius: 12px;
+    padding: 12px 16px;
+    border: 1px solid #D1D5DB; /* Светлая рамка */
+    border-radius: 10px;
     font-size: 1rem;
-    transition: all 0.3s ease;
-    background: #f8f9fa;
+    color: #111827;
+    background: #F9FAFB; /* Очень светлый фон */
+    transition: all 0.2s ease;
 }
 
 .form-control:focus {
-    border-color: #0067FF;
-    background: white;
+    border-color: #458FF6;
+    background: #FFFFFF;
     outline: none;
-    box-shadow: 0 0 0 4px rgba(0, 103, 255, 0.1);
+    box-shadow: 0 0 0 3px rgba(69, 143, 246, 0.15);
+}
+
+/* Readonly поле */
+.form-control[readonly] {
+    background-color: #F3F4F6;
+    color: #6B7280;
+    cursor: not-allowed;
+    border-color: #E5E7EB;
+}
+
+.helper-text {
+    display: block;
+    margin-top: 6px;
+    color: #9CA3AF;
+    font-size: 0.85rem;
 }
 
 /* Кастомный инпут файла */
 .file-upload-wrapper {
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 input[type="file"] {
     font-size: 0.9rem;
+    color: #6B7280;
 }
 
-/* Кнопка */
+input[type="file"]::file-selector-button {
+    margin-right: 15px;
+    border: none;
+    background: #E0E7FF;
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: #458FF6;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background .2s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: #D1DEFF;
+}
+
+/* Кнопка Сохранить */
 .btn-save {
-    background: #0067FF;
+    background: #458FF6;
     color: white;
     border: none;
-    padding: 15px 40px;
+    padding: 14px 30px;
     border-radius: 12px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    margin-top: 20px;
+    transition: all 0.2s;
+    margin-top: 30px;
     display: inline-flex;
     align-items: center;
     gap: 10px;
+    box-shadow: 0 4px 6px rgba(69, 143, 246, 0.2);
 }
 
 .btn-save:hover {
-    background: #0056d6;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 103, 255, 0.3);
+    background: #3B82F6;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(69, 143, 246, 0.3);
+}
+
+.btn-save svg {
+    width: 20px;
+    height: 20px;
 }
 
 /* Сообщения */
 .alert {
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 25px;
     font-weight: 500;
+    display: flex;
+    align-items: center;
 }
 
 .alert-success {
-    background: #d4edda;
-    color: #155724;
+    background: #ECFDF5;
+    color: #065F46;
+    border: 1px solid #A7F3D0;
 }
 
 .alert-error {
-    background: #f8d7da;
-    color: #721c24;
+    background: #FEF2F2;
+    color: #991B1B;
+    border: 1px solid #FECACA;
 }
 
-@media (max-width: 768px) {
+/* Адаптивность */
+@media (max-width: 900px) {
     .settings-container {
         grid-template-columns: 1fr;
     }
+    
+    .profile-card {
+        margin-bottom: 20px;
+    }
+}
 
+@media (max-width: 600px) {
     .form-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .settings-form-card {
+        padding: 25px;
     }
 }

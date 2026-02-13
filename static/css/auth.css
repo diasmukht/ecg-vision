@@ -1,0 +1,331 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* === LEFT SIDE (FORM) === */
+.login-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    background: #ffffff;
+    position: relative;
+}
+
+.login-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.register-prompt {
+    margin-bottom: 40px;
+    color: #6b7280;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.register-link {
+    color: #458FF6;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
+
+/* Формы */
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #374151; /* Темно-серый */
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    color: #9ca3af; /* Светло-серый иконки */
+    display: flex;
+    align-items: center;
+}
+
+.input-icon svg path {
+    fill: #9ca3af; /* Красим SVG в серый */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 15px 15px 15px 45px; /* Отступ слева под иконку */
+    background: #f9fafb; /* Очень светлый фон */
+    border: 1px solid #e5e7eb; /* Тонкая рамка */
+    border-radius: 12px;
+    color: #111;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+input:focus {
+    background: #fff;
+    border-color: #458FF6;
+    box-shadow: 0 0 0 4px rgba(69, 143, 246, 0.1);
+}
+
+input::placeholder {
+    color: #9ca3af;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-password svg path {
+    fill: #9ca3af;
+}
+
+/* Footer формы */
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #6b7280;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.remember-me input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #458FF6;
+    border-radius: 4px;
+}
+
+.forgot-password {
+    color: #458FF6;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* Кнопка входа */
+.btn-login {
+    width: 100%;
+    padding: 16px;
+    background: #458FF6;
+    border: none;
+    border-radius: 50px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 20px rgba(69, 143, 246, 0.2);
+}
+
+.btn-login:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px rgba(69, 143, 246, 0.3);
+}
+
+/* Socials */
+.divider {
+    text-align: center;
+    color: #9ca3af;
+    margin-bottom: 25px;
+    font-size: 14px;
+    position: relative;
+}
+
+.divider::before, .divider::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 25%;
+    height: 1px;
+    background: #e5e7eb;
+}
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+
+.social-login {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Круглые */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border: 1px solid #e5e7eb; /* Рамка */
+    background: white;
+}
+
+.social-btn:hover {
+    transform: scale(1.05);
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.social-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Ошибки */
+.error-message {
+    color: #e02424;
+    background-color: #fde8e8;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    text-align: center;
+    border: 1px solid #fbd5d5;
+}
+
+/* === RIGHT SIDE (VISUAL) === */
+.visual-section {
+    flex: 1;
+    background: radial-gradient(circle at center, #458FF6 0%, #286bd3 100%); /* Синий градиент */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.phone-contact {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff; /* Белый текст на синем фоне */
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 30px;
+    backdrop-filter: blur(5px);
+}
+
+.phone-contact:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.hero-image {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.heart-img {
+    width: 280px;
+    height: auto;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.2));
+}
+
+.ecg-line {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    z-index: 1;
+    opacity: 0.8;
+}
+
+/* Анимация пульса (Если используешь heartbeat.css) */
+/* Важно: линия должна быть белой на синем фоне */
+.heartbeat-line {
+    stroke: white !important;
+}
+
+.heartbeat-svg {
+    filter: drop-shadow(0 0 5px rgba(67, 205, 255, 0.8));
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .visual-section { display: none; } /* Скрываем картинку на планшетах для фокуса */
+    .container { justify-content: center; background: #f3f4f6; }
+    .login-section { max-width: 500px; border-radius: 20px; height: auto; margin: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
+    .phone-contact { display: none; }
+}

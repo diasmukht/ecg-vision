@@ -5,9 +5,9 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #0f0f0f;
-    color: #ffffff;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #F3F4F6; /* Светло-серый фон страницы */
+    color: #1F2937; /* Темно-серый текст */
     min-height: 100vh;
 }
 
@@ -16,10 +16,10 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar */
+/* === SIDEBAR (Левая панель) === */
 .sidebar {
-    width: 250px;
-    background-color: #1a1a1a;
+    width: 260px;
+    background-color: #FFFFFF; /* Белый фон */
     padding: 30px 20px;
     display: flex;
     flex-direction: column;
@@ -27,62 +27,77 @@ body {
     height: 100vh;
     overflow-y: auto;
     z-index: 1000;
+    border-right: 1px solid #E5E7EB; /* Тонкая разделительная линия */
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02); /* Легкая тень */
 }
 
+/* Логотип в сайдбаре */
+.sidebar > a > svg {
+    margin-bottom: 40px;
+    display: block;
+}
+
+/* Меню навигации */
 .nav-menu {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .nav-item {
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 15px 20px;
+    padding: 14px 20px;
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s ease;
     text-decoration: none;
-    color: #cbcbcb;
+    color: #6B7280; /* Серый цвет неактивных ссылок */
+    font-weight: 500;
+    font-size: 15px;
 }
 
 .nav-item:hover {
-    background-color: #2a2a2a;
-    color: #fff;
+    background-color: #F9FAFB; /* Очень светлый фон при наведении */
+    color: #111827; /* Черный текст при наведении */
 }
 
+/* Активный элемент меню */
 .nav-item.active {
-    background: linear-gradient(135deg, #458FF6, #3b88f3);
-    color: #fff;
+    background: linear-gradient(135deg, #458FF6 0%, #2563EB 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(69, 143, 246, 0.3);
 }
 
-/* Добавь это, чтобы SVG наследовали цвет текста (белый при active, серый обычно) */
+/* Иконки в меню */
+.nav-item svg {
+    width: 22px;
+    height: 22px;
+}
+
 .nav-item svg path {
     transition: fill 0.3s;
+    fill: currentColor; /* Иконка берет цвет текста */
 }
 
-/* Это заставит иконки брать цвет у родителя (ссылки) */
-.nav-item svg path {
-    fill: currentColor; 
-}
-
-
+/* Кнопка выхода */
 .logout {
     margin-top: auto;
     padding-top: 20px;
-    border-top: 1px solid #333;
+    border-top: 1px solid #E5E7EB;
 }
 
-/* Main Content */
+/* === MAIN CONTENT (Правая часть) === */
 .main-content {
     flex: 1;
-    margin-left: 250px;
-    padding: 30px;
+    margin-left: 260px; /* Отступ под ширину сайдбара */
+    padding: 30px 40px;
+    width: 100%;
 }
 
-/* Header */
+/* === HEADER === */
 .header {
     display: flex;
     justify-content: space-between;
@@ -91,86 +106,101 @@ body {
 }
 
 .breadcrumb {
-    color: #666;
+    color: #9CA3AF;
     font-size: 14px;
+    font-weight: 500;
 }
 
 .breadcrumb span {
-    color: #fff;
+    color: #111827; /* Темный цвет текущей страницы */
+    font-weight: 600;
 }
 
 .header-right {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 25px;
 }
 
-.search-box {
-    position: relative;
-    width: 300px;
-}
 
-.search-box input {
-    width: 100%;
-    padding: 12px 45px 12px 45px;
-    background-color: #2a2a2a;
-    border: 1px solid #333;
-    border-radius: 12px;
-    color: #fff;
-    outline: none;
-}
-
-.search-icon {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.mic-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-}
-
+/* Уведомления */
 .notification {
     position: relative;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.notification svg path {
+    stroke: #6B7280; /* Серый цвет колокольчика */
+    transition: stroke 0.2s;
+}
+
+.notification:hover svg path {
+    stroke: #111827;
 }
 
 .notification-badge {
     position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: #ff5a7a;
+    top: -2px;
+    right: -2px;
+    background-color: #EF4444; /* Красный индикатор */
     color: #fff;
     font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 10px;
+    font-weight: bold;
+    padding: 2px 5px;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid #F3F4F6; /* Обводка под цвет фона */
 }
 
+/* Аватар пользователя */
 .user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #ff5a7a, #ff859d);
+    background: #E0E7FF; /* Светло-синий фон для букв */
+    color: #458FF6;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
 }
 
+.user-avatar:hover {
+    transform: scale(1.05);
+}
 
+/* Hamburger Menu (Мобильное) */
+.menu-toggle {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1001;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: #111827;
+    font-size: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
 
-
-
-
+/* Адаптивность */
 @media (max-width: 968px) {
     .sidebar {
         transform: translateX(-100%);
         transition: transform 0.3s;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.1);
     }
 
     .sidebar.active {
@@ -179,23 +209,19 @@ body {
 
     .main-content {
         margin-left: 0;
+        padding: 80px 20px 20px 20px;
     }
 
-
-    .search-box {
-        width: 200px;
+    .menu-toggle {
+        display: block;
     }
 }
 
 @media (max-width: 640px) {
-    .main-content {
-        padding: 15px;
-    }
-
     .header {
         flex-direction: column;
-        gap: 15px;
         align-items: flex-start;
+        gap: 15px;
     }
 
     .header-right {
@@ -205,31 +231,6 @@ body {
 
     .search-box {
         width: 100%;
-    }
-
-    .greeting {
-        font-size: 24px;
-    }
-
-}
-
-/* Hamburger Menu */
-.menu-toggle {
-    display: none;
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 1001;
-    background-color: #2a2a2a;
-    border: none;
-    border-radius: 8px;
-    padding: 10px;
-    cursor: pointer;
-    color: white;
-}
-
-@media (max-width: 968px) {
-    .menu-toggle {
-        display: block;
+        max-width: 100%;
     }
 }

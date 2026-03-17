@@ -4,14 +4,14 @@ from django.utils import timezone
 import datetime
 
 
-# 1. МОДЕЛЬ ВРАЧА (Расширяем стандартного юзера)
+
 class Doctor(AbstractUser):
-    # ФИО (first_name, last_name уже есть в AbstractUser, добавим отчество)
+
     middle_name = models.CharField("Отчество", max_length=50, blank=True)
     phone = models.CharField("Телефон", max_length=20, blank=True)
     specialization = models.CharField("Специализация", max_length=100, default="Кардиолог")
     
-    # Аватарка врача (по желанию)
+
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
 
     def get_full_name_rus(self):
@@ -21,7 +21,7 @@ class Doctor(AbstractUser):
         verbose_name = "Врач"
         verbose_name_plural = "Врачи"
 
-# 2. МОДЕЛЬ ПАЦИЕНТА
+
 class Patient(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name="Лечащий врач")
     first_name = models.CharField("Имя", max_length=50)
@@ -45,32 +45,29 @@ class Patient(models.Model):
     def full_name(self):
         return f"{self.last_name} {self.first_name} {self.middle_name}"
 
-# 3. МОДЕЛЬ ОБСЛЕДОВАНИЯ (САМАЯ ГЛАВНАЯ)
+
 class ECGExamination(models.Model):
-    # Связи
+
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='ecgs', verbose_name="Пациент")
     doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True, verbose_name="Врач диагностики")
     
-    # Файл
+
     ecg_file = models.FileField(upload_to='ecg_files/%Y/%m/%d/', verbose_name="Файл ЭКГ (.csv)")
     created_at = models.DateTimeField("Дата загрузки", default=timezone.now)
     
-    # == Блок автоматических метрик (Python считает, не ИИ) ==
+
     hr = models.IntegerField("ЧСС (уд/мин)", null=True, blank=True)
-    qrs_duration = models.FloatField("QRS (сек)", null=True, blank=True) # 0.10
-    p_duration = models.FloatField("P (сек)", null=True, blank=True)     # 0.12
-    pq_interval = models.FloatField("PQ (сек)", null=True, blank=True)   # 0.16
-    qt_interval = models.FloatField("QT (сек)", null=True, blank=True)   # 0.32
+    qrs_duration = models.FloatField("QRS (сек)", null=True, blank=True) 
+    p_duration = models.FloatField("P (сек)", null=True, blank=True)     
+    pq_interval = models.FloatField("PQ (сек)", null=True, blank=True)   
+    qt_interval = models.FloatField("QT (сек)", null=True, blank=True)   
     
-    # == Заключение (Врач может править) ==
     rhythm_type = models.CharField("Ритм", max_length=100, default="Синусовый правильный")
     conclusion = models.TextField("Заключение врача", blank=True)
     
-    # == Результаты ИИ (Храним как JSON) ==
-    # Пример: [{"time": "00:00-00:10", "status": "Norma", "conf": 98}, ...]
+
     ai_report_json = models.JSONField("Отчет ИИ", null=True, blank=True)
-    
-    # Общий статус (для быстрой фильтрации)
+ 
     STATUS_CHOICES = [
         ('pending', 'В обработке'),
         ('healthy', 'Здоров'),

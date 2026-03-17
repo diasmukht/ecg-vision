@@ -142,7 +142,6 @@
 </div>
 
 <script>
-    // Скрипт для открытия/закрытия модалки
     function openModal() {
         document.getElementById('patientModal').style.display = 'flex';
     }
@@ -151,7 +150,6 @@
         document.getElementById('patientModal').style.display = 'none';
     }
 
-    // Закрытие по клику вне окна
     window.onclick = function (event) {
         if (event.target == document.getElementById('patientModal')) {
             closeModal();

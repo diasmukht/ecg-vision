@@ -2,8 +2,7 @@
 {% extends 'analyzer/dashboard/base_dash.html' %}
 {% load static %}
 
-{% block title %}Загрузка ЭКГ{% endblock %}
-{% block page_name %}Новая диагностика{% endblock %}
+
 
 {% block content %}
 <style>
@@ -75,7 +74,7 @@
         border-color: #0067FF;
     }
 
-    /* Сообщения */
+
     .alert {
         padding: 15px;
         border-radius: 10px;
@@ -137,7 +136,7 @@
 </div>
 
 <script>
-    // Показать имя файла
+
     document.getElementById('real-file').addEventListener('change', function() {
         if (this.files[0]) {
             const fileName = this.files[0].name;
@@ -147,7 +146,7 @@
         }
     });
 
-    // Анимация кнопки при отправке
+
     function showLoader() {
         const btn = document.getElementById('submitBtn');
         btn.innerHTML = `

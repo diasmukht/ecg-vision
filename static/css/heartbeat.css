@@ -16,16 +16,11 @@
 .heartbeat-line {
     fill: none;
     stroke: #FF3B5C;
-    /* Ярко-красный */
     stroke-width: 3;
     stroke-linecap: round;
     stroke-linejoin: round;
-
-    /* Длина линии и ее смещение для анимации рисования */
     stroke-dasharray: 1000;
     stroke-dashoffset: 1000;
-
-    /* Анимация: 2 секунды на проход, без пауз, бесконечно */
     animation: drawLine 2s linear infinite;
 }
 
@@ -37,7 +32,6 @@
 
     10% {
         opacity: 1;
-        /* Линия появляется сразу в начале движения */
     }
 
     90% {
@@ -47,8 +41,6 @@
 
     100% {
         stroke-dashoffset: -100;
-        /* Небольшой уход в минус для плавности */
         opacity: 0;
-        /* Исчезновение перед новым циклом */
     }
 }

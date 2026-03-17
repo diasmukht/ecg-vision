@@ -2,7 +2,7 @@ from django import forms
 from .models import Doctor, Patient, ECGExamination
 
 class UserRegistrationForm(forms.ModelForm):
-    # Добавляем кастомное поле для ФИО
+
     full_name = forms.CharField(
         label="ФИО", 
         widget=forms.TextInput(attrs={'placeholder': 'Иванов Иван Иванович'}),
@@ -13,7 +13,6 @@ class UserRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = Doctor
-        # Убираем first_name, оставляем только email и пароль
         fields = ['email', 'password']
 
     def clean_email(self):
@@ -31,21 +30,20 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError("Пароли не совпадают")
         return cleaned_data
 
-    # Переопределяем сохранение, чтобы разбить ФИО
     def save(self, commit=True):
         user = super().save(commit=False)
         
-        # Берем строку "Иванов Иван Иванович"
+
         full_name = self.cleaned_data.get('full_name', '').strip()
         parts = full_name.split()
         
-        # Логика разбиения (стандарт ФИО: Фамилия Имя Отчество)
+
         if len(parts) > 0:
-            user.last_name = parts[0]        # 1-е слово -> Фамилия
+            user.last_name = parts[0]        
         if len(parts) > 1:
-            user.first_name = parts[1]       # 2-е слово -> Имя
+            user.first_name = parts[1]      
         if len(parts) > 2:
-            user.middle_name = ' '.join(parts[2:]) # Остальное -> Отчество
+            user.middle_name = ' '.join(parts[2:]) 
             
         if commit:
             user.save()
@@ -63,12 +61,12 @@ class DoctorProfileForm(forms.ModelForm):
         model = Doctor
         fields = ['full_name', 'email', 'phone', 'specialization', 'avatar']
         widgets = {
-            'email': forms.EmailInput(attrs={'readonly': 'readonly'}), # Email лучше не менять, это логин
+            'email': forms.EmailInput(attrs={'readonly': 'readonly'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Если профиль уже существует, склеиваем ФИО для отображения в поле
+        
         if self.instance.pk:
             parts = [
                 self.instance.last_name,
@@ -80,14 +78,14 @@ class DoctorProfileForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         
-        # Разбиваем строку ФИО обратно на части
+
         full_name = self.cleaned_data.get('full_name', '').strip()
         parts = full_name.split()
         
         if len(parts) > 0: user.last_name = parts[0]
         if len(parts) > 1: user.first_name = parts[1]
         if len(parts) > 2: user.middle_name = ' '.join(parts[2:])
-        else: user.middle_name = '' # Если стерли отчество
+        else: user.middle_name = '' 
 
         if commit:
             user.save()
@@ -104,7 +102,7 @@ class PatientForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Добавляем стили ко всем полям, чтобы было красиво
+
         for field in self.fields:
             if field != 'gender' and field != 'birth_date':
                 self.fields[field].widget.attrs.update({'class': 'form-control', 'placeholder': self.fields[field].label})

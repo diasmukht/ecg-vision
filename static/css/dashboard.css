@@ -6,8 +6,8 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #F3F4F6; /* Светло-серый фон страницы */
-    color: #1F2937; /* Темно-серый текст */
+    background-color: #F3F4F6; 
+    color: #1F2937; 
     min-height: 100vh;
 }
 
@@ -16,10 +16,9 @@ body {
     min-height: 100vh;
 }
 
-/* === SIDEBAR (Левая панель) === */
 .sidebar {
     width: 260px;
-    background-color: #FFFFFF; /* Белый фон */
+    background-color: #FFFFFF; 
     padding: 30px 20px;
     display: flex;
     flex-direction: column;
@@ -27,17 +26,15 @@ body {
     height: 100vh;
     overflow-y: auto;
     z-index: 1000;
-    border-right: 1px solid #E5E7EB; /* Тонкая разделительная линия */
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02); /* Легкая тень */
+    border-right: 1px solid #E5E7EB; 
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
 }
 
-/* Логотип в сайдбаре */
 .sidebar > a > svg {
     margin-bottom: 40px;
     display: block;
 }
 
-/* Меню навигации */
 .nav-menu {
     flex: 1;
     display: flex;
@@ -54,24 +51,22 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
     text-decoration: none;
-    color: #6B7280; /* Серый цвет неактивных ссылок */
+    color: #6B7280;
     font-weight: 500;
     font-size: 15px;
 }
 
 .nav-item:hover {
-    background-color: #F9FAFB; /* Очень светлый фон при наведении */
-    color: #111827; /* Черный текст при наведении */
+    background-color: #F9FAFB; 
+    color: #111827; 
 }
 
-/* Активный элемент меню */
 .nav-item.active {
     background: linear-gradient(135deg, #458FF6 0%, #2563EB 100%);
     color: #ffffff;
     box-shadow: 0 4px 12px rgba(69, 143, 246, 0.3);
 }
 
-/* Иконки в меню */
 .nav-item svg {
     width: 22px;
     height: 22px;
@@ -79,25 +74,22 @@ body {
 
 .nav-item svg path {
     transition: fill 0.3s;
-    fill: currentColor; /* Иконка берет цвет текста */
+    fill: currentColor; 
 }
 
-/* Кнопка выхода */
 .logout {
     margin-top: auto;
     padding-top: 20px;
     border-top: 1px solid #E5E7EB;
 }
 
-/* === MAIN CONTENT (Правая часть) === */
 .main-content {
     flex: 1;
-    margin-left: 260px; /* Отступ под ширину сайдбара */
+    margin-left: 260px; 
     padding: 30px 40px;
     width: 100%;
 }
 
-/* === HEADER === */
 .header {
     display: flex;
     justify-content: space-between;
@@ -112,7 +104,7 @@ body {
 }
 
 .breadcrumb span {
-    color: #111827; /* Темный цвет текущей страницы */
+    color: #111827; 
     font-weight: 600;
 }
 
@@ -123,7 +115,6 @@ body {
 }
 
 
-/* Уведомления */
 .notification {
     position: relative;
     cursor: pointer;
@@ -132,7 +123,7 @@ body {
 }
 
 .notification svg path {
-    stroke: #6B7280; /* Серый цвет колокольчика */
+    stroke: #6B7280; 
     transition: stroke 0.2s;
 }
 
@@ -144,7 +135,7 @@ body {
     position: absolute;
     top: -2px;
     right: -2px;
-    background-color: #EF4444; /* Красный индикатор */
+    background-color: #EF4444; 
     color: #fff;
     font-size: 10px;
     font-weight: bold;
@@ -155,15 +146,14 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 2px solid #F3F4F6; /* Обводка под цвет фона */
+    border: 2px solid #F3F4F6; 
 }
 
-/* Аватар пользователя */
 .user-avatar {
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background: #E0E7FF; /* Светло-синий фон для букв */
+    background: #E0E7FF; 
     color: #458FF6;
     display: flex;
     align-items: center;
@@ -178,7 +168,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Hamburger Menu (Мобильное) */
 .menu-toggle {
     display: none;
     position: fixed;
@@ -195,7 +184,6 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-/* Адаптивность */
 @media (max-width: 968px) {
     .sidebar {
         transform: translateX(-100%);

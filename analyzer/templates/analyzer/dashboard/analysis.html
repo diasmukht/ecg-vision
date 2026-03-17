@@ -2,14 +2,11 @@
 {% extends 'analyzer/dashboard/base_dash.html' %}
 {% load static %}
 
-{% block title %}Анализ ЭКГ #{{ exam.id }}{% endblock %}
-{% block page_name %}Детальный анализ{% endblock %}
 
 {% block content %}
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <style>
-    /* === СТИЛИ АНАЛИЗА === */
     :root {
         --primary-blue: #0067FF;
         --bg-light: #f4f7fe;
@@ -28,7 +25,7 @@
         padding-bottom: 50px;
     }
 
-    /* 1. ХЕДЕР (Информация) */
+
     .analysis-header {
         background: var(--card-bg);
         border-radius: 20px;
@@ -68,7 +65,7 @@
         letter-spacing: 1px;
     }
 
-    /* 2. ПРОТОКОЛ */
+
     .protocol-card {
         background: var(--card-bg);
         border-radius: 20px;
@@ -112,7 +109,7 @@
         border: 1px solid #b3dfff;
     }
 
-    /* 3. ГРАФИК */
+
     .chart-card {
         background: var(--card-bg);
         border-radius: 20px;
@@ -129,7 +126,7 @@
         color: var(--text-gray);
     }
 
-    /* 4. СЕГМЕНТЫ (Временные окна) */
+
     .segments-card {
         background: var(--card-bg);
         border-radius: 20px;
@@ -160,9 +157,9 @@
         font-weight: 600;
     }
     
-    .status-norma { color: #05cd99; } /* Зеленый */
-    .status-pathology { color: #ee5d50; } /* Красный */
-    .status-pending { color: #ffce20; } /* Желтый */
+    .status-norma { color: #05cd99; } 
+    .status-pathology { color: #ee5d50; } 
+    .status-pending { color: #ffce20; } 
 
     .btn-show {
         background: transparent;
@@ -180,7 +177,7 @@
         color: white;
     }
 
-    /* 5. ФУТЕР (Кнопка отчета) */
+
     .footer-actions {
         text-align: right;
         margin-top: 10px;
@@ -240,7 +237,7 @@
             </div>
             <div class="protocol-item">
                 <span class="p-label">P</span>
-                <span class="p-value">{{ metrics.p }} c</span>
+                <span class="p-value">{{ metrics.p }}</span>
             </div>
             <div class="protocol-item">
                 <span class="p-label">PQ</span>
@@ -308,12 +305,12 @@
     const fs = 360; 
     const timeAxis = rawSignal.map((_, i) => i / fs);
 
-    // Настройка графика Plotly
+
     const trace = {
         x: timeAxis,
         y: rawSignal,
         mode: 'lines',
-        line: { color: '#000000', width: 1.2 }, // Черная линия как на бумаге
+        line: { color: '#000000', width: 1.2 },
         name: 'ЭКГ'
     };
 
@@ -323,11 +320,11 @@
         plot_bgcolor: 'white',
         xaxis: {
             title: 'Время (сек)',
-            gridcolor: '#ffcdd2', // Розовая сетка (медицинская)
+            gridcolor: '#ffcdd2',
             gridwidth: 1,
-            dtick: 0.2, // Шаг 200 мс (большая клетка 5 мм)
+            dtick: 0.2, 
             zeroline: false,
-            range: [0, 5], // Показываем первые 5 сек по умолчанию
+            range: [0, 5], 
             showspikes: true
         },
         yaxis: {
@@ -335,9 +332,9 @@
             gridcolor: '#ffcdd2',
             gridwidth: 1,
             zeroline: false,
-            fixedrange: false // Разрешаем зум по Y
+            fixedrange: false 
         },
-        dragmode: 'pan' // Режим руки
+        dragmode: 'pan' 
     };
 
     const config = {
@@ -348,7 +345,7 @@
 
     Plotly.newPlot('ecgChart', [trace], layout, config);
 
-    // Функция зума
+    
     function zoomTo(startSec) {
         Plotly.relayout('ecgChart', {
             'xaxis.range': [startSec, startSec + 5]

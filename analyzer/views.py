@@ -5,11 +5,11 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import ECGUploadForm, UserRegistrationForm, DoctorProfileForm, PatientForm
 from .models import Patient, ECGExamination
-from .ai_module import ECGService  # <-- Импортируем наш единый модуль
+from .ai_module import ECGService  
 import pandas as pd
 import numpy as np
 
-# --- LANDING & AUTH (Оставляем как есть) ---
+
 
 def landing(request):
     if request.user.is_authenticated:
@@ -54,7 +54,6 @@ def user_logout(request):
     logout(request)
     return redirect('landing')
 
-# --- DASHBOARD (Оставляем как есть) ---
 
 @login_required(login_url='login')
 def dashboard_main(request):
@@ -104,9 +103,7 @@ def dashboard_settings(request):
         form = DoctorProfileForm(instance=user)
     return render(request, 'analyzer/dashboard/settings.html', {'form': form})
 
-# --- ECG PROCESSING (ИСПРАВЛЕННАЯ ЧАСТЬ) ---
 
-# 1. ЗАГРУЗКА И АНАЛИЗ
 @login_required(login_url='login')
 def dashboard_check_ecg(request):
     if request.method == 'POST':
@@ -118,20 +115,15 @@ def dashboard_check_ecg(request):
             exam.save()
 
             try:
-                # ВЫЗЫВАЕМ ЕДИНЫЙ СЕРВИС
-                # Он делает ВСЁ: читает, считает метрики, запускает нейросеть
+
                 analysis_result = ECGService.analyze_file(exam.ecg_file.path)
                 
-                # Извлекаем метрики
                 metrics = analysis_result.get('metrics', {})
                 exam.hr = metrics.get('hr', 0)
                 exam.qrs_duration = metrics.get('qrs', 0)
                 exam.qt_interval = metrics.get('qt', 0)
                 exam.pq_interval = metrics.get('pq', 0)
-                # Если в модели есть rr_interval, раскомментируй:
-                # exam.rr_interval = metrics.get('rr', 0)
 
-                # Извлекаем отчет ИИ и статус
                 exam.ai_report_json = analysis_result.get('ai_report', [])
                 exam.status = analysis_result.get('status', 'healthy')
                 
@@ -150,34 +142,32 @@ def dashboard_check_ecg(request):
 
     return render(request, 'analyzer/dashboard/check_ecg.html', {'form': form})
 
-# 2. ПРОСМОТР РЕЗУЛЬТАТОВ
 @login_required(login_url='login')
 def ecg_analysis_view(request, pk):
     exam = get_object_or_404(ECGExamination, pk=pk)
     
-    # Подготовка сигнала для графика (используем метод из сервиса, чтобы не дублировать код)
+    
     signal_data = []
     try:
-        # Читаем сигнал тем же умным способом, что и сервис
+
         raw_data = ECGService.read_signal(exam.ecg_file.path)
         if raw_data is not None:
-            # Берем первые 30 секунд для JS (360 * 30 = 10800)
-            signal_data = raw_data[:10800].tolist()
-            # Заменяем NaN на 0
+
+            signal_data = raw_data[:108000].tolist()
+
             signal_data = [x if not pd.isna(x) else 0 for x in signal_data]
     except Exception as e:
         print(f"Error reading signal for view: {e}")
 
-    # Подготовка метрик для шаблона (форматирование в секунды)
     metrics_display = {
         'hr': exam.hr,
-        'qrs': f"{(exam.qrs_duration or 0)/1000:.2f}", # мс -> с
+        'qrs': f"{(exam.qrs_duration or 0)/1000:.2f}", 
         'qt': f"{(exam.qt_interval or 0)/1000:.2f}",
         'pq': f"{(exam.pq_interval or 0)/1000:.2f}",
-        'p': "0.10" # Заглушка, т.к. P редко считают точно
+        'p': "-" 
     }
 
-    # Сегменты берем ПРЯМО из JSON (который сгенерировал ИИ)
+    
     segments = exam.ai_report_json or []
 
     context = {
@@ -190,7 +180,6 @@ def ecg_analysis_view(request, pk):
     }
     return render(request, 'analyzer/dashboard/analysis.html', context)
 
-# ПЕЧАТНЫЙ ОТЧЕТ
 @login_required(login_url='login')
 def ecg_report_view(request, pk):
     exam = get_object_or_404(ECGExamination, pk=pk)

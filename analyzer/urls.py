@@ -16,6 +16,6 @@ urlpatterns = [
 
 
     path('dashboard/check-ecg/', views.dashboard_check_ecg, name='check_ecg'), 
-    path('dashboard/analysis/<int:pk>/', views.ecg_analysis_view, name='ecg_analysis'), # Графики
-    path('dashboard/report/<int:pk>/', views.ecg_report_view, name='ecg_report'),       # Печатный бланк
+    path('dashboard/analysis/<int:pk>/', views.ecg_analysis_view, name='ecg_analysis'), 
+    path('dashboard/report/<int:pk>/', views.ecg_report_view, name='ecg_report'),       
 ]

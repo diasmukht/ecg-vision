@@ -1,4 +1,4 @@
-/* Заголовок страницы */
+
 .archive-header {
     display: flex;
     justify-content: space-between;
@@ -12,7 +12,6 @@
     font-weight: 700;
 }
 
-/* Поиск */
 .search-box {
     position: relative;
     width: 320px;
@@ -49,7 +48,6 @@
     stroke: #9CA3AF;
 }
 
-/* Кнопка добавления (Синяя) */
 .btn-add {
     background: #458FF6;
     color: white;
@@ -72,7 +70,6 @@
     box-shadow: 0 6px 12px rgba(69, 143, 246, 0.3);
 }
 
-/* Таблица */
 .table-container {
     background: #FFFFFF;
     border-radius: 20px;
@@ -119,7 +116,6 @@ tr:hover td {
     background-color: #F9FAFB;
 }
 
-/* Бейджи статусов (Светлая тема) */
 .status-badge {
     padding: 4px 12px;
     border-radius: 20px;
@@ -128,31 +124,26 @@ tr:hover td {
     display: inline-block;
 }
 
-/* Здоров: Зеленый */
 .status-healthy {
     background: #ECFDF5;
     color: #059669;
 }
 
-/* Патология: Красный */
 .status-pathology {
     background: #FEF2F2;
     color: #DC2626;
 }
 
-/* Внимание: Желтый/Оранжевый */
 .status-warning {
     background: #FFFBEB;
     color: #D97706;
 }
 
-/* В обработке: Серый */
 .status-pending {
     background: #F3F4F6;
     color: #4B5563;
 }
 
-/* Кнопка действия в таблице */
 .action-btn {
     padding: 6px 14px;
     border-radius: 8px;
@@ -169,7 +160,6 @@ tr:hover td {
     color: #ffffff;
 }
 
-/* Пустое состояние */
 .empty-state {
     text-align: center; 
     padding: 60px; 

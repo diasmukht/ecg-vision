@@ -1,0 +1,220 @@
+:root {
+    --primary-blue: #0067FF;
+    --bg-light: #f4f7fe;
+    --text-dark: #2B3674;
+    --text-gray: #A3AED0;
+    --card-bg: #FFFFFF;
+    --border-color: #E0E5F2;
+}
+
+.analysis-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+
+
+.analysis-header {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+}
+
+.header-left h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin-bottom: 20px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px 30px;
+    font-size: 16px;
+}
+
+.info-label {
+    color: var(--text-gray);
+    font-weight: 500;
+}
+
+.info-value {
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.header-right {
+    text-align: right;
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    margin-bottom: 15px;
+    display: block;
+    letter-spacing: 1px;
+}
+
+
+.protocol-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--bg-light);
+    padding-bottom: 10px;
+}
+
+.protocol-data {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.protocol-item {
+    background: var(--bg-light);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.p-label {
+    font-size: 14px;
+    color: var(--text-gray);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.p-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.rhythm-box {
+    background: #e6f7ff;
+    color: #0067FF;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid #b3dfff;
+}
+
+
+.chart-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+    height: 500px;
+}
+
+.chart-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: var(--text-gray);
+}
+
+
+.segments-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+}
+
+.segment-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.segment-row:last-child {
+    border-bottom: none;
+}
+
+.seg-time {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-dark);
+    width: 150px;
+}
+
+.seg-status {
+    flex-grow: 1;
+    font-weight: 600;
+}
+
+.status-norma {
+    color: #05cd99;
+}
+
+.status-pathology {
+    color: #ee5d50;
+}
+
+.status-pending {
+    color: #ffce20;
+}
+
+.btn-show {
+    background: transparent;
+    border: 1px solid var(--primary-blue);
+    color: var(--primary-blue);
+    padding: 8px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-show:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+
+
+.footer-actions {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.btn-report {
+    background: linear-gradient(90deg, #0067FF 0%, #0056D2 100%);
+    color: white;
+    padding: 15px 40px;
+    border-radius: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 10px 20px rgba(0, 103, 255, 0.2);
+    display: inline-block;
+    transition: transform 0.2s;
+}
+
+.btn-report:hover {
+    transform: translateY(-2px);
+}

@@ -67,7 +67,7 @@
                 <td>{{ p.phone }}</td>
                 <td style="color: #6B7280;">{{ p.created_at|date:"d.m.Y" }}</td>
                 <td>
-                    <a href="#" class="action-btn">Карта &rarr;</a>
+                    <a href="{% url 'patient_detail' pk=p.id %}" class="action-btn">Карта &rarr;</a>
                 </td>
             </tr>
             {% endfor %}

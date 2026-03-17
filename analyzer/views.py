@@ -89,6 +89,37 @@ def dashboard_patients(request):
     return render(request, 'analyzer/dashboard/patients.html', context)
 
 @login_required(login_url='login')
+def dashboard_patient_detail(request, pk):
+    patient = get_object_or_404(Patient, pk=pk, doctor=request.user)
+    
+    examinations = patient.ecgs.all().order_by('-created_at')
+    
+    form = PatientForm(instance=patient)
+
+    context = {
+        'patient': patient,
+        'examinations': examinations,
+        'form': form
+    }
+    return render(request, 'analyzer/dashboard/patient_detail.html', context)
+
+@login_required(login_url='login')
+def dashboard_patient_edit(request, pk):
+    patient = get_object_or_404(Patient, pk=pk, doctor=request.user)
+    
+    if request.method == 'POST':
+        form = PatientForm(request.POST, instance=patient)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Данные пациента успешно обновлены!")
+            return redirect('patient_detail', pk=patient.pk)
+        else:
+            messages.error(request, "Ошибка при обновлении данных.")
+    
+    return redirect('patient_detail', pk=patient.pk)
+
+
+@login_required(login_url='login')
 def dashboard_settings(request):
     user = request.user
     if request.method == 'POST':
@@ -138,7 +169,12 @@ def dashboard_check_ecg(request):
         else:
              messages.error(request, "Ошибка формы")
     else:
-        form = ECGUploadForm(request.user)
+        patient_id = request.GET.get('patient_id')       
+        initial_data = {}
+        if patient_id:
+            initial_data['patient'] = patient_id
+          
+        form = ECGUploadForm(request.user, initial=initial_data)
 
     return render(request, 'analyzer/dashboard/check_ecg.html', {'form': form})
 

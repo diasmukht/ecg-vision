@@ -3,194 +3,287 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Отчет #{{ exam.id }}</title>
+    <title>Отчет ЭКГ #{{ exam.id }}</title>
     <style>
-        body {
-            background: #555;
-            font-family: 'Times New Roman', serif;
-            margin: 0;
-            padding: 40px;
+        /* --- Базовые стили (для экрана) --- */
+        :root {
+            --primary-blue: #0067FF;
+            --text-dark: #2B3674;
+            --text-gray: #707EAE;
+            --bg-light: #f4f7fe;
+            --border-color: #E0E5F2;
         }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #e2e8f0; /* Серый фон вокруг листа на экране */
+            color: #1a202c;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.5;
+        }
+
+        /* --- Кнопка печати --- */
+        .btn-print {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0, 103, 255, 0.3);
+            transition: all 0.2s;
+            z-index: 1000;
+        }
+
+        .btn-print:hover {
+            transform: translateY(-2px);
+            background: #0056D2;
+        }
+
+        /* --- Лист А4 --- */
         .a4-page {
             background: white;
-            width: 210mm;
-            min-height: 297mm;
+            max-width: 210mm;      /* Ширина стандартного листа А4 */
+            min-height: 297mm;     /* Высота листа А4 */
             margin: 0 auto;
-            padding: 20mm;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            padding: 20mm;         /* Внутренние отступы (поля документа) */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            box-sizing: border-box;
             position: relative;
         }
-        
+
+        /* --- Шапка --- */
         .header {
-            border-bottom: 2px solid #000;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid var(--primary-blue);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
         }
-        
+
         .logo-text {
-            font-size: 24px;
-            font-weight: bold;
-            color: #0067FF;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary-blue);
+            letter-spacing: 1px;
         }
-        
+
         .contact-info {
-            font-size: 12px;
-            color: #555;
             text-align: right;
+            font-size: 13px;
+            color: var(--text-gray);
+            line-height: 1.6;
         }
 
         .record-info {
-            font-weight: bold;
+            background: var(--bg-light);
+            padding: 15px 20px;
+            border-radius: 8px;
             font-size: 14px;
             margin-bottom: 30px;
+            font-weight: 600;
+            color: var(--text-dark);
+            border-left: 4px solid var(--primary-blue);
         }
 
+        /* --- Секции --- */
         .section-title {
-            font-size: 16px;
-            font-weight: bold;
-            text-transform: uppercase;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-            margin-top: 30px;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-dark);
             margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 35px;
         }
 
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px 20px;
             font-size: 14px;
+            margin-bottom: 30px;
         }
-        
-        .label { color: #666; width: 120px; display: inline-block; }
 
+        .info-grid .label {
+            color: var(--text-gray);
+            display: inline-block;
+            width: 130px;
+        }
+
+        /* --- Метрики --- */
         .metrics-box {
-            border: 1px solid #000;
-            padding: 15px;
-            margin-top: 10px;
-            display: flex;
-            justify-content: space-between;
-            font-family: monospace;
-            font-size: 16px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            background: #e6f7ff;
+            border: 1px solid #b3dfff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+            text-align: center;
         }
 
+        .metrics-box div {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .metrics-box strong {
+            display: block;
+            font-size: 18px;
+            color: var(--primary-blue);
+            margin-top: 5px;
+        }
+
+        /* --- Заключение --- */
         .conclusion-box {
-            background: #f9f9f9;
-            padding: 15px;
-            min-height: 100px;
-            border: 1px solid #ddd;
-            margin-top: 10px;
+            margin-top: 15px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: #ffffff;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #2d3748;
         }
 
         .footer {
-            position: absolute;
-            bottom: 20mm;
-            left: 20mm;
-            right: 20mm;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
             text-align: center;
-            font-size: 10px;
-            color: #999;
-            border-top: 1px solid #eee;
-            padding-top: 10px;
+            font-size: 12px;
+            color: var(--text-gray);
         }
 
+        /* =========================================
+           МАГИЯ ПЕЧАТИ (Сработает при нажатии Ctrl+P)
+           ========================================= */
         @media print {
-            body { background: white; padding: 0; }
-            .a4-page { box-shadow: none; margin: 0; width: 100%; }
-            .no-print { display: none; }
-        }
-        
-        .btn-print {
-            position: fixed;
-            top: 20px; right: 20px;
-            background: #0067FF;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            font-family: sans-serif;
-            border-radius: 5px;
+            /* Принудительно заставляем принтер печатать фоновые цвета (синие плашки) */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Убираем серый фон и отступы вокруг листа */
+            body {
+                background: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            /* Скрываем кнопку печати на самой распечатке */
+            .no-print {
+                display: none !important;
+            }
+
+            /* Убираем тени и лишние отступы у А4, чтобы принтер не создал 2 пустые страницы */
+            .a4-page {
+                box-shadow: none;
+                margin: 0;
+                padding: 10mm; /* Делаем поля чуть меньше для бумаги */
+                max-width: 100%;
+                border-radius: 0;
+            }
+
+            /* Настройка размеров самой страницы принтера */
+            @page {
+                size: A4 portrait;
+                margin: 10mm;
+            }
         }
     </style>
 </head>
 <body>
 
-    <button class="btn-print no-print" onclick="window.print()">🖨 Печать / PDF</button>
+    <button class="btn-print no-print" onclick="window.print()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 5px; margin-top: -2px;">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        Печать / PDF
+    </button>
 
     <div class="a4-page">
         <div class="header">
             <div>
                 <div class="logo-text">ECG_Vision</div>
-                <div style="font-size: 12px; margin-top: 5px;">Система ИИ-диагностики</div>
+                <div style="font-size: 12px; margin-top: 5px; color: var(--text-gray); font-weight: 600;">Система ИИ-диагностики</div>
             </div>
             <div class="contact-info">
-                ecg@mail.com<br>
+                <strong>ecg@mail.com</strong><br>
                 +7 705 436 6705<br>
                 Алматы, Казахстан
             </div>
         </div>
 
         <div class="record-info">
-            Запись #{{ exam.id }}<br>
-            Дата: {{ exam.created_at|date:"d.m.Y / H:i" }}
+            Запись ЭКГ #{{ exam.id }}<br>
+            <span style="font-weight: normal; font-size: 13px;">Сформировано: {{ exam.created_at|date:"d.m.Y / H:i" }}</span>
         </div>
 
         <div class="section-title">Информация о пациенте</div>
         <div class="info-grid">
-            <div>
-                <span class="label">Пациент:</span> <strong>{{ exam.patient.full_name }}</strong>
-            </div>
-            <div>
-                <span class="label">Врач:</span> {{ exam.doctor.get_full_name_rus }}
-            </div>
-            <div>
-                <span class="label">Дата рождения:</span> {{ exam.patient.birth_date|date:"d.m.Y" }} ({{ exam.patient.age }} лет)
-            </div>
-            <div>
-                <span class="label">Телефон:</span> {{ exam.patient.phone }}
-            </div>
-            <div>
-                <span class="label">Пол:</span> {{ exam.patient.get_gender_display }}
-            </div>
+            <div><span class="label">Пациент:</span> <strong style="color: var(--text-dark);">{{ exam.patient.full_name }}</strong></div>
+            <div><span class="label">Врач:</span> <strong style="color: var(--text-dark);">{{ exam.doctor.get_full_name_rus }}</strong></div>
+            <div><span class="label">Дата рождения:</span> <strong style="color: var(--text-dark);">{{ exam.patient.birth_date|date:"d.m.Y" }} ({{ exam.patient.age }} лет)</strong></div>
+            <div><span class="label">Телефон:</span> <strong style="color: var(--text-dark);">{{ exam.patient.phone|default:"Не указан" }}</strong></div>
+            <div><span class="label">Пол:</span> <strong style="color: var(--text-dark);">{{ exam.patient.get_gender_display }}</strong></div>
         </div>
 
         <div class="section-title">Протокол исследования</div>
-        <div>Электрокардиограмма от {{ exam.created_at|date:"d.m.Y" }}</div>
+        <div style="font-size: 14px; color: var(--text-dark);">Электрокардиограмма от {{ exam.created_at|date:"d.m.Y" }}</div>
         
         <div class="metrics-box">
-            <div>QRS: <strong>{{ exam.qrs_duration|default:"-" }} c</strong></div>
-            <div>P: <strong>{{ exam.p_duration|default:"-" }} c</strong></div>
-            <div>PQ: <strong>{{ exam.pq_interval|default:"-" }} c</strong></div>
-            <div>QT: <strong>{{ exam.qt_interval|default:"-" }} c</strong></div>
-            <div>ЧСС: <strong>{{ exam.hr|default:"-" }} уд/мин</strong></div>
+            <div>QRS: <strong>{{ metrics.qrs }} c</strong></div>
+            <div>P: <strong>{{ metrics.p }} c</strong></div>
+            <div>PQ: <strong>{{ metrics.pq }} c</strong></div>
+            <div>QT: <strong>{{ metrics.qt }} c</strong></div>
+            <div>ЧСС: <strong>{{ metrics.hr }} уд/мин</strong></div>
         </div>
 
-        <div class="section-title">Заключение</div>
+        <div class="section-title">Медицинское заключение</div>
         
-        <p><strong>Ритм:</strong> {{ exam.rhythm_type }}</p>
+        <div style="background: var(--bg-light); padding: 12px 20px; border-radius: 8px; font-size: 15px; border-left: 4px solid var(--text-gray);">
+            <strong>Базовый ритм:</strong> {{ exam.rhythm_type }}
+        </div>
         
         <div class="conclusion-box">
+            <div style="color: var(--text-gray); font-size: 12px; margin-bottom: 8px; text-transform: uppercase; font-weight: 700;">Предварительный анализ ИИ:</div>
             {% if exam.status == 'healthy' %}
-                Патологий не выявлено. Показатели в пределах нормы.
+                <span style="color: #05cd99; font-weight: 600;">✓ Норма.</span> Патологий не выявлено. Показатели в пределах нормы.
             {% elif exam.status == 'warning' %}
-                Выявлены нарушения ритма. Рекомендуется дополнительное обследование (Холтер).
-                <br><br>
-                Зафиксированы эпизоды аритмии (см. детализацию ИИ).
+                <span style="color: #ffce20; font-weight: 600;">⚠ Внимание.</span> Выявлены отклонения. Рекомендуется дополнительное обследование (Холтер). Зафиксированы эпизоды нестабильного ритма.
+            {% elif exam.status == 'pathology' %}
+                <span style="color: #ee5d50; font-weight: 600;">❗ Патология.</span> Выявлены критические нарушения ритма (см. детализацию на графике).
             {% else %}
-                {{ exam.conclusion|default:"Автоматическое заключение: Требуется проверка врачом." }}
+                {{ exam.conclusion|default:"Требуется проверка врачом." }}
             {% endif %}
             
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+
+            <div style="color: var(--primary-blue); font-size: 12px; margin-bottom: 8px; text-transform: uppercase; font-weight: 700;">Комментарий врача:</div>
             {% if exam.conclusion %}
-                <br><br><strong>Комментарий врача:</strong><br>
-                {{ exam.conclusion }}
+                <strong>{{ exam.conclusion|linebreaksbr }}</strong>
+            {% else %}
+                <span style="color: var(--text-gray); font-style: italic;">Дополнительные комментарии отсутствуют.</span>
             {% endif %}
         </div>
 
         <div class="footer">
-            Данное заключение сформировано автоматически системой ECG_Vision с поддержкой ИИ.<br>
-            Не является окончательным диагнозом. Требуется консультация специалиста.
+            Данное заключение сформировано аппаратно-программным комплексом ECG_Vision.<br>
+            Врач несет ответственность за окончательную интерпретацию данных.
         </div>
     </div>
 

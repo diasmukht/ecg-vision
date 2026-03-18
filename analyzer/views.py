@@ -182,6 +182,24 @@ def dashboard_check_ecg(request):
 def ecg_analysis_view(request, pk):
     exam = get_object_or_404(ECGExamination, pk=pk)
     
+
+    
+    if request.method == 'POST':
+        rhythm = request.POST.get('rhythm_type')
+        conclusion = request.POST.get('conclusion')
+        
+        if rhythm:
+            exam.rhythm_type = rhythm
+        if conclusion is not None:
+            exam.conclusion = conclusion
+            
+        exam.save()
+        messages.success(request, "Заключение успешно сохранено!")
+      
+        if 'save_and_print' in request.POST:
+            return redirect('ecg_report', pk=exam.pk) 
+        return redirect('ecg_analysis', pk=exam.pk)
+   
     
     signal_data = []
     try:
@@ -219,4 +237,14 @@ def ecg_analysis_view(request, pk):
 @login_required(login_url='login')
 def ecg_report_view(request, pk):
     exam = get_object_or_404(ECGExamination, pk=pk)
-    return render(request, 'analyzer/dashboard/report.html', {'exam': exam})
+
+
+    formatted_metrics = {
+        'hr': exam.hr,
+        'qrs': f"{(exam.qrs_duration or 0)/1000:.2f}", 
+        'qt': f"{(exam.qt_interval or 0)/1000:.2f}",
+        'pq': f"{(exam.pq_interval or 0)/1000:.2f}",
+        'p': f"{(exam.p_duration or 0)/1000:.2f}" if getattr(exam, 'p_duration', None) else "-" 
+    }
+    
+    return render(request, 'analyzer/dashboard/report.html', {'exam': exam, 'metrics': formatted_metrics})

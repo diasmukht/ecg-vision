@@ -50,3 +50,97 @@
     font-size: 1.1rem;
     cursor: pointer;
 }
+
+
+.upload-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+}
+
+.upload-card {
+    background: white;
+    padding: 50px;
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+    width: 600px;
+    text-align: center;
+    border: 1px solid #e1e5eb;
+}
+
+.upload-icon {
+    width: 80px;
+    height: 80px;
+    background: #f0f4f8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: #0067FF;
+}
+
+.custom-file-upload {
+    border: 2px dashed #e1e5eb;
+    border-radius: 15px;
+    padding: 40px;
+    margin: 20px 0;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #fdfdfd;
+}
+
+.custom-file-upload:hover {
+    border-color: #0067FF;
+    background: #f0f7ff;
+}
+
+.btn-next {
+    width: 100%;
+    padding: 15px;
+    background: #0067FF;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 10px;
+}
+
+.btn-next:hover {
+    background: #0056d6;
+}
+
+/* Стили для селекта пациента */
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e1e5eb;
+    border-radius: 10px;
+    font-size: 1rem;
+    margin-top: 5px;
+    background: white;
+    outline: none;
+}
+
+select:focus {
+    border-color: #0067FF;
+}
+
+
+.alert {
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}

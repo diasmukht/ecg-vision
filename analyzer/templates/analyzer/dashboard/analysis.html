@@ -9,7 +9,6 @@
 
 
 <div class="analysis-wrapper">
-
     <div class="analysis-header">
         <div class="header-left">
             <h1>Анализ ЭКГ #{{ exam.id }}</h1>
@@ -78,6 +77,8 @@
         <div id="ecgChart" style="width: 100%; height: 95%;"></div>
     </div>
 
+
+
     <div class="segments-card">
         <div class="section-title">Временные интервалы</div>
 
@@ -97,12 +98,47 @@
         {% endfor %}
     </div>
 
+    <div class="segments-card" style="margin-top: 25px;">
+        <div class="section-title">Медицинское заключение</div>
+    
+        <form method="POST">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-size: 14px; color: var(--text-gray); font-weight: 600; margin-bottom: 8px;">Базовый ритм</label>
+            <select name="rhythm_type" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-light); font-size: 15px; color: var(--text-dark); outline: none;">
+                <option value="Синусовый правильный" {% if exam.rhythm_type == 'Синусовый правильный' %}selected{% endif %}>Синусовый правильный</option>
+                <option value="Синусовая тахикардия" {% if exam.rhythm_type == 'Синусовая тахикардия' %}selected{% endif %}>Синусовая тахикардия</option>
+                <option value="Синусовая брадикардия" {% if exam.rhythm_type == 'Синусовая брадикардия' %}selected{% endif %}>Синусовая брадикардия</option>
+                <option value="Фибрилляция предсердий" {% if exam.rhythm_type == 'Фибрилляция предсердий' %}selected{% endif %}>Фибрилляция предсердий</option>
+                <option value="Желудочковая экстрасистолия" {% if exam.rhythm_type == 'Желудочковая экстрасистолия' %}selected{% endif %}>Желудочковая экстрасистолия</option>
+                <option value="Трепетание предсердий" {% if exam.rhythm_type == 'Трепетание предсердий' %}selected{% endif %}>Трепетание предсердий</option>
+                <option value="Нарушение ритма (Иное)" {% if exam.rhythm_type == 'Нарушение ритма (Иное)' %}selected{% endif %}>Нарушение ритма (Иное)</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 14px; color: var(--text-gray); font-weight: 600; margin-bottom: 8px;">Дополнительный комментарий / Заключение</label>
+            <textarea name="conclusion" rows="4" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-light); font-size: 15px; color: var(--text-dark); outline: none; resize: vertical;" placeholder="Опишите выявленные патологии (например: элевация ST в отведениях...)">{{ exam.conclusion }}</textarea>
+        </div>
+
+        <div style="display: flex; gap: 15px; justify-content: flex-end;">
+            <button type="submit" name="save_only" style="background: white; border: 2px solid var(--primary-blue); color: var(--primary-blue); padding: 12px 25px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s;">
+                Сохранить черновик
+            </button>
+            <button type="submit" name="save_and_print" style="background: var(--primary-blue); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s;">
+                Сохранить и Открыть Отчет
+            </button>
+        </div>
+        </form>
+    </div>
+
+
     <div class="footer-actions">
         <a href="{% url 'ecg_report' exam.pk %}" class="btn-report">
             Перейти к отчету ➜
         </a>
     </div>
-
 </div>
 
 {{ signal_data|json_script:"ecg-signal" }}

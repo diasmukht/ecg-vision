@@ -1,0 +1,272 @@
+:root {
+    --primary-blue: #0067FF;
+    --bg-light: #f4f7fe;
+    --text-dark: #2B3674;
+    --text-gray: #A3AED0;
+    --card-bg: #FFFFFF;
+    --border-color: #E0E5F2;
+}
+
+.dashboard-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+
+/* --- Шапка с кнопками --- */
+
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    padding: 25px 30px;
+    border-radius: 20px;
+    box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+}
+
+.dash-header h1 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin: 0 0 5px 0;
+}
+
+.dash-header p {
+    color: var(--text-gray);
+    margin: 0;
+    font-size: 15px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-primary {
+    background: var(--primary-blue);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+    box-shadow: 0 10px 20px rgba(0, 103, 255, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    color: white;
+}
+
+.btn-secondary {
+    background: var(--bg-light);
+    color: var(--text-dark);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+
+.btn-secondary:hover {
+    background: var(--border-color);
+}
+
+
+/* --- Карточки метрик --- */
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.metric-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+}
+
+.metric-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.metric-info span {
+    color: var(--text-gray);
+    font-size: 14px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.metric-info strong {
+    color: var(--text-dark);
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+
+/* --- Списки (Красная зона и История) --- */
+
+.lists-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.list-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+}
+
+.list-header {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.list-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.patient-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.patient-info strong {
+    color: var(--text-dark);
+    font-size: 15px;
+}
+
+.patient-info span {
+    color: var(--text-gray);
+    font-size: 13px;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge-healthy {
+    background: #e6fff4;
+    color: #05cd99;
+}
+
+.badge-pathology {
+    background: #ffebeb;
+    color: #ee5d50;
+}
+
+.badge-warning {
+    background: #fff8d6;
+    color: #ffce20;
+}
+
+.badge-pending {
+    background: var(--bg-light);
+    color: var(--text-gray);
+}
+
+.btn-go {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    background: var(--bg-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-go:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+
+width: 35px;
+height: 35px;
+border-radius: 10px;
+background: var(--bg-light);
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(--text-dark);
+text-decoration: none;
+transition: 0.2s;
+
+}
+.btn-go:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+olor: #ffce20;
+
+}
+.badge-pending {
+    background: var(--bg-light);
+    color: var(--text-gray);
+}
+.btn-go {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    background: var(--bg-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: 0.2s;
+}
+.btn-go:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+background: var(--primary-blue);
+color: white;
+
+}

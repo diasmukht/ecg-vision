@@ -1,19 +1,120 @@
-<!DOCTYPE html>
 {% extends 'analyzer/dashboard/base_dash.html' %}
+{% load static %}
 
 {% block page_name %}Главная{% endblock %}
 
 {% block content %}
-<div class="dashboard-welcome">
-    <h1 style="font-size: 28px; margin-bottom: 20px;">Добро пожаловать, Доктор!</h1>
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+<div class="dashboard-wrapper">
     
-    <div style="background: #ffffff; padding: 40px; border-radius: 20px; text-align: center;">
-        <h2 style="margin-bottom: 15px;">Загрузка ЭКГ</h2>
-        <p style="color: #999; margin-bottom: 30px;">Загрузите файл CSV для анализа</p>
+    <div class="dash-header">
+        <div>
+            <h1>С возвращением, {{ request.user.first_name }}!</h1>
+            <p>Вот сводка по вашим пациентам на сегодня.</p>
+        </div>
+        <div class="action-buttons">
+            <a href="{% url 'patients' %}" class="btn-secondary">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                База пациентов
+            </a>
+            <a href="{% url 'check_ecg' %}" class="btn-primary">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                Загрузить ЭКГ
+            </a>
+        </div>
+    </div>
+
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-icon" style="background: #e6f7ff; color: #0067FF;">
+                <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            </div>
+            <div class="metric-info">
+                <span>Всего пациентов</span>
+                <strong>{{ total_patients }}</strong>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon" style="background: #e6fff4; color: #05cd99;">
+                <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            </div>
+            <div class="metric-info">
+                <span>Проведено ЭКГ</span>
+                <strong>{{ total_ecgs }}</strong>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon" style="background: #ffebeb; color: #ee5d50;">
+                <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <div class="metric-info">
+                <span>Выявлено патологий</span>
+                <strong>{{ pathologies_count }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="lists-grid">
         
-        <button style="background: #0067FF; color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 16px; cursor: pointer;">
-            Выбрать файл
-        </button>
+        <div class="list-card" style="border-top: 4px solid #ee5d50;">
+            <div class="list-header">
+                <span style="background: #ffebeb; color: #ee5d50; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center;">⚠</span>
+                Требуют внимания
+            </div>
+            
+            {% for exam in critical_ecgs %}
+            <div class="list-item">
+                <div class="patient-info">
+                    <strong>{{ exam.patient.last_name }} {{ exam.patient.first_name|first }}.</strong>
+                    <span>{{ exam.created_at|date:"d.m.Y в H:i" }}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span class="status-badge {% if exam.status == 'pathology' %}badge-pathology{% else %}badge-warning{% endif %}">
+                        {% if exam.status == 'pathology' %}Патология{% else %}Внимание{% endif %}
+                    </span>
+                    <a href="{% url 'ecg_analysis' pk=exam.id %}" class="btn-go" title="Открыть анализ">→</a>
+                </div>
+            </div>
+            {% empty %}
+            <div style="text-align: center; padding: 30px 0; color: var(--text-gray);">
+                Критических отклонений не найдено. Отличная работа!
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="list-card">
+            <div class="list-header">
+                <span style="background: var(--bg-light); color: var(--primary-blue); width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center;">⏱</span>
+                Последние загрузки
+            </div>
+            
+            {% for exam in recent_ecgs %}
+            <div class="list-item">
+                <div class="patient-info">
+                    <strong>{{ exam.patient.last_name }} {{ exam.patient.first_name|first }}.</strong>
+                    <span>{{ exam.created_at|date:"d.m.Y в H:i" }}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span class="status-badge 
+                        {% if exam.status == 'healthy' %}badge-healthy
+                        {% elif exam.status == 'pathology' %}badge-pathology
+                        {% elif exam.status == 'warning' %}badge-warning
+                        {% else %}badge-pending{% endif %}">
+                        {{ exam.get_status_display|default:exam.status }}
+                    </span>
+                    <a href="{% url 'ecg_analysis' pk=exam.id %}" class="btn-go" title="Открыть анализ">→</a>
+                </div>
+            </div>
+            {% empty %}
+            <div style="text-align: center; padding: 30px 0; color: var(--text-gray);">
+                Вы еще не загрузили ни одного ЭКГ.
+            </div>
+            {% endfor %}
+        </div>
+
     </div>
 </div>
 {% endblock %}

@@ -1,4 +1,6 @@
 from django.urls import path
+from rest_framework.authtoken.views import obtain_auth_token 
+from analyzer import api_views
 from . import views
 
 urlpatterns = [
@@ -21,5 +23,9 @@ urlpatterns = [
 
     path('dashboard/check-ecg/', views.dashboard_check_ecg, name='check_ecg'), 
     path('dashboard/analysis/<int:pk>/', views.ecg_analysis_view, name='ecg_analysis'), 
-    path('dashboard/report/<int:pk>/', views.ecg_report_view, name='ecg_report'),       
+    path('dashboard/report/<int:pk>/', views.ecg_report_view, name='ecg_report'),
+    
+    # --- API ENDPOINTS ---
+    path('api/token/', obtain_auth_token, name='api_token_auth'),
+    path('api/ecg/analyze/', api_views.AnalyzeECGAPIView.as_view(), name='api_ecg_analyze'),  
 ]

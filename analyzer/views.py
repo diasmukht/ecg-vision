@@ -57,7 +57,33 @@ def user_logout(request):
 
 @login_required(login_url='login')
 def dashboard_main(request):
-    return render(request, 'analyzer/dashboard/main.html')
+    doctor = request.user
+    
+
+    total_patients = Patient.objects.filter(doctor=doctor).count()
+    total_ecgs = ECGExamination.objects.filter(doctor=doctor).count()
+    pathologies_count = ECGExamination.objects.filter(
+        doctor=doctor, 
+        status__in=['pathology', 'warning']
+    ).count()
+    
+
+    critical_ecgs = ECGExamination.objects.filter(
+        doctor=doctor, 
+        status__in=['pathology', 'warning']
+    ).order_by('-created_at')[:5]
+    
+  
+    recent_ecgs = ECGExamination.objects.filter(doctor=doctor).order_by('-created_at')[:5]
+    
+    context = {
+        'total_patients': total_patients,
+        'total_ecgs': total_ecgs,
+        'pathologies_count': pathologies_count,
+        'critical_ecgs': critical_ecgs,
+        'recent_ecgs': recent_ecgs,
+    }
+    return render(request, 'analyzer/dashboard/main.html', context)
 
 @login_required(login_url='login')
 def dashboard_archive(request):
